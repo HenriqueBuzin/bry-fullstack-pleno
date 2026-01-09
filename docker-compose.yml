@@ -1,0 +1,143 @@
+services:
+  # ============================
+  # BACKEND - APACHE (DEV)
+  # ============================
+  backend-apache:
+    profiles: ["dev"]
+    build:
+      context: ./backend/apache
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      - backend-php
+    networks:
+      - app-network
+
+  # ============================
+  # BACKEND - APACHE (PROD)
+  # ============================
+  backend-apache-prod:
+    profiles: ["prod"]
+    build:
+      context: ./backend/apache
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend:/var/www/html:ro
+    depends_on:
+      - backend-php-prod
+    networks:
+      - app-network
+
+  # ============================
+  # BACKEND - PHP-FPM (DEV)
+  # ============================
+  backend-php:
+    profiles: ["dev"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/var/www/html
+    secrets:
+      - db_user
+      - db_password
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  # ============================
+  # BACKEND - PHP-FPM (PROD)
+  # ============================
+  backend-php-prod:
+    profiles: ["prod"]
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    secrets:
+      - db_user
+      - db_password
+    depends_on:
+      - db
+    networks:
+      app-network:
+        aliases:
+          - backend-php
+
+  # ============================
+  # FRONTEND - DEV (Angular)
+  # ============================
+  # frontend:
+  #   profiles: ["dev"]
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./frontend:/app
+  #   ports:
+  #     - "4200:4200"
+  #   command: npm run start
+  #   networks:
+  #     - app-network
+
+  # # ============================
+  # # FRONTEND - PROD (Build)
+  # # ============================
+  # frontend-prod:
+  #   profiles: ["prod"]
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile.prod
+  #   ports:
+  #     - "4200:80"
+  #   networks:
+  #     - app-network
+
+  # ============================
+  # DATABASE - MYSQL
+  # ============================
+  db:
+    image: mysql:8.0
+    profiles: ["dev", "prod"]
+    ports:
+      - "3307:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    secrets:
+      - db_user
+      - db_password
+      - db_root_password
+    environment:
+      MYSQL_DATABASE: bry
+      MYSQL_USER_FILE: /run/secrets/db_user
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+    networks:
+      - app-network
+
+# ============================
+# VOLUMES
+# ============================
+volumes:
+  dbdata:
+
+# ============================
+# SECRETS
+# ============================
+secrets:
+  db_user:
+    file: ./docker/secrets/db_user.txt
+  db_password:
+    file: ./docker/secrets/db_password.txt
+  db_root_password:
+    file: ./docker/secrets/db_root_password.txt
+
+# ============================
+# NETWORK
+# ============================
+networks:
+  app-network:
+    driver: bridge

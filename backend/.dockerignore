@@ -1,0 +1,5 @@
+vendor
+bootstrap/cache/*.php
+storage/*.key
+.git
+node_modules
