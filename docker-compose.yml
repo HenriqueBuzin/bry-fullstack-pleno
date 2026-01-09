@@ -41,6 +41,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./backend:/var/www/html
+      - /var/www/html/vendor
     secrets:
       - db_user
       - db_password
