@@ -3,6 +3,7 @@ services:
   # BACKEND - APACHE (DEV)
   # ============================
   backend-apache:
+    container_name: backend-apache
     profiles: ["dev"]
     build:
       context: ./backend/apache
@@ -19,6 +20,7 @@ services:
   # BACKEND - APACHE (PROD)
   # ============================
   backend-apache-prod:
+    container_name: backend-apache-prod
     profiles: ["prod"]
     build:
       context: ./backend/apache
@@ -35,6 +37,7 @@ services:
   # BACKEND - PHP-FPM (DEV)
   # ============================
   backend-php:
+    container_name: backend-php
     profiles: ["dev"]
     build:
       context: ./backend
@@ -54,6 +57,7 @@ services:
   # BACKEND - PHP-FPM (PROD)
   # ============================
   backend-php-prod:
+    container_name: backend-php-prod
     profiles: ["prod"]
     build:
       context: ./backend
@@ -72,6 +76,7 @@ services:
   # FRONTEND - DEV (Angular)
   # ============================
   # frontend:
+  #   container_name: frontend
   #   profiles: ["dev"]
   #   build:
   #     context: ./frontend
@@ -88,6 +93,7 @@ services:
   # # FRONTEND - PROD (Build)
   # # ============================
   # frontend-prod:
+  #   container_name: frontend-prod
   #   profiles: ["prod"]
   #   build:
   #     context: ./frontend
@@ -101,6 +107,7 @@ services:
   # DATABASE - MYSQL
   # ============================
   db:
+    container_name: db
     image: mysql:8.0
     profiles: ["dev", "prod"]
     ports:
