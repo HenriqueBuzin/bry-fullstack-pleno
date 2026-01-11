@@ -28,12 +28,10 @@ class CompanyController extends Controller
 
         $company = Company::create($data);
 
-        // vínculo com funcionários
         if (!empty($data['employee_ids'])) {
             $company->employees()->sync($data['employee_ids']);
         }
 
-        // vínculo com clientes
         if (!empty($data['client_ids'])) {
             $company->clients()->sync($data['client_ids']);
         }

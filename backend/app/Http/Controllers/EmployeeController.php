@@ -7,6 +7,7 @@ use App\Http\Requests\EmployeeUpdateRequest;
 use App\Models\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
@@ -26,6 +27,9 @@ class EmployeeController extends Controller
     public function store(EmployeeStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
+
+        // 🔐 hash da senha
+        $data['password'] = Hash::make($data['password']);
 
         // cria funcionário
         $employee = Employee::create($data);
@@ -72,11 +76,15 @@ class EmployeeController extends Controller
     ): JsonResponse {
         $data = $request->validated();
 
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
         $employee->update($data);
 
-        // upload do documento
         if ($request->hasFile('documento')) {
-            // remove antigo
             if ($employee->documento_path) {
                 Storage::disk('public')->delete($employee->documento_path);
             }
@@ -90,7 +98,6 @@ class EmployeeController extends Controller
             ]);
         }
 
-        // sync empresas
         if (array_key_exists('company_ids', $data)) {
             $employee->companies()->sync($data['company_ids'] ?? []);
         }
@@ -106,7 +113,6 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee): JsonResponse
     {
-        // remove documento
         if ($employee->documento_path) {
             Storage::disk('public')->delete($employee->documento_path);
         }

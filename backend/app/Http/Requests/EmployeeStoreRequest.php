@@ -11,6 +11,15 @@ class EmployeeStoreRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'cpf' => isset($this->cpf)
+                ? preg_replace('/\D/', '', $this->cpf)
+                : null,
+        ]);
+    }
+
     public function rules(): array
     {
         return [
@@ -19,18 +28,17 @@ class EmployeeStoreRequest extends FormRequest
                 'string',
                 'max:50',
                 'unique:employees,login',
-                'regex:/^[A-Za-z0-9._-]+$/', // sem acento
+                'regex:/^[A-Za-z0-9._-]+$/',
             ],
             'nome' => [
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[A-Za-z ]+$/', // sem acento
+                'regex:/^[A-Za-z ]+$/',
             ],
             'cpf' => [
                 'required',
-                'string',
-                'max:14',
+                'digits:11',
                 'unique:employees,cpf',
             ],
             'email' => [
@@ -49,15 +57,13 @@ class EmployeeStoreRequest extends FormRequest
                 'min:6',
             ],
 
-            // upload do documento
             'documento' => [
                 'nullable',
                 'file',
                 'mimes:pdf,jpg,jpeg',
-                'max:5120', // 5MB
+                'max:5120',
             ],
 
-            // vínculo com empresas
             'company_ids' => ['sometimes', 'array'],
             'company_ids.*' => ['integer', 'exists:companies,id'],
         ];
@@ -69,6 +75,32 @@ class EmployeeStoreRequest extends FormRequest
             'login.regex' => 'O login não pode conter acentuação.',
             'nome.regex' => 'O nome não pode conter acentuação.',
             'documento.mimes' => 'O documento deve ser PDF ou JPG.',
+            'required' => 'O campo :attribute é obrigatório.',
+            'string' => 'O campo :attribute deve ser um texto.',
+            'email' => 'O campo :attribute deve ser um e-mail válido.',
+            'unique' => 'O valor informado para :attribute já está em uso.',
+            'exists' => 'O valor selecionado para :attribute é inválido.',
+            'digits' => 'O campo :attribute deve conter :digits dígitos.',
+            'min.string' => 'O campo :attribute deve ter no mínimo :min caracteres.',
+            'max.string' => 'O campo :attribute deve ter no máximo :max caracteres.',
+            'regex' => 'O campo :attribute possui formato inválido.',
+            'file' => 'O campo :attribute deve ser um arquivo.',
+            'mimes' => 'O arquivo deve estar nos formatos: :values.',
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'login' => 'login',
+            'nome' => 'nome',
+            'cpf' => 'CPF',
+            'email' => 'e-mail',
+            'endereco' => 'endereço',
+            'password' => 'senha',
+            'documento' => 'documento',
+            'company_ids' => 'empresas',
+            'company_ids.*' => 'empresa',
         ];
     }
 }

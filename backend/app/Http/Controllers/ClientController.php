@@ -7,6 +7,7 @@ use App\Http\Requests\ClientUpdateRequest;
 use App\Models\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
 
 class ClientController extends Controller
 {
@@ -27,10 +28,10 @@ class ClientController extends Controller
     {
         $data = $request->validated();
 
-        // cria cliente
+        $data['password'] = Hash::make($data['password']);
+
         $client = Client::create($data);
 
-        // upload do documento
         if ($request->hasFile('documento')) {
             $path = $request->file('documento')
                 ->store("documents/clients/{$client->id}", 'public');
@@ -41,7 +42,6 @@ class ClientController extends Controller
             ]);
         }
 
-        // vínculo com empresas
         if (!empty($data['company_ids'])) {
             $client->companies()->sync($data['company_ids']);
         }
@@ -55,12 +55,15 @@ class ClientController extends Controller
     /**
      * GET /clients/{id}
      */
-    public function show(Client $client): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        return response()->json(
-            $client->load('companies'),
-            200
-        );
+        $client = Client::with('companies')->find($id);
+
+        if (!$client) {
+            return response()->json(['message' => 'Cliente não encontrado'], 404);
+        }
+
+        return response()->json($client, 200);
     }
 
     /**
@@ -72,11 +75,15 @@ class ClientController extends Controller
     ): JsonResponse {
         $data = $request->validated();
 
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
         $client->update($data);
 
-        // upload do documento
         if ($request->hasFile('documento')) {
-            // remove documento antigo
             if ($client->documento_path) {
                 Storage::disk('public')->delete($client->documento_path);
             }
@@ -90,7 +97,6 @@ class ClientController extends Controller
             ]);
         }
 
-        // sync empresas
         if (array_key_exists('company_ids', $data)) {
             $client->companies()->sync($data['company_ids'] ?? []);
         }
@@ -106,7 +112,6 @@ class ClientController extends Controller
      */
     public function destroy(Client $client): JsonResponse
     {
-        // remove documento
         if ($client->documento_path) {
             Storage::disk('public')->delete($client->documento_path);
         }
