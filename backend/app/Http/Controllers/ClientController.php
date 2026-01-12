@@ -7,7 +7,6 @@ use App\Http\Requests\ClientUpdateRequest;
 use App\Models\Client;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
 
 class ClientController extends Controller
 {
@@ -28,17 +27,16 @@ class ClientController extends Controller
     {
         $data = $request->validated();
 
-        $data['password'] = Hash::make($data['password']);
-
+        // password já é hasheada no Model (booted)
         $client = Client::create($data);
 
-        if ($request->hasFile('documento')) {
-            $path = $request->file('documento')
+        if ($request->hasFile('document')) {
+            $path = $request->file('document')
                 ->store("documents/clients/{$client->id}", 'public');
 
             $client->update([
-                'documento_path' => $path,
-                'documento_mime' => $request->file('documento')->getMimeType(),
+                'document_path' => $path,
+                'document_mime' => $request->file('document')->getMimeType(),
             ]);
         }
 
@@ -75,25 +73,24 @@ class ClientController extends Controller
     ): JsonResponse {
         $data = $request->validated();
 
-        if (!empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        } else {
+        // se password vier vazia, não atualiza
+        if (empty($data['password'])) {
             unset($data['password']);
         }
 
         $client->update($data);
 
-        if ($request->hasFile('documento')) {
-            if ($client->documento_path) {
-                Storage::disk('public')->delete($client->documento_path);
+        if ($request->hasFile('document')) {
+            if ($client->document_path) {
+                Storage::disk('public')->delete($client->document_path);
             }
 
-            $path = $request->file('documento')
+            $path = $request->file('document')
                 ->store("documents/clients/{$client->id}", 'public');
 
             $client->update([
-                'documento_path' => $path,
-                'documento_mime' => $request->file('documento')->getMimeType(),
+                'document_path' => $path,
+                'document_mime' => $request->file('document')->getMimeType(),
             ]);
         }
 
@@ -112,8 +109,8 @@ class ClientController extends Controller
      */
     public function destroy(Client $client): JsonResponse
     {
-        if ($client->documento_path) {
-            Storage::disk('public')->delete($client->documento_path);
+        if ($client->document_path) {
+            Storage::disk('public')->delete($client->document_path);
         }
 
         $client->delete();

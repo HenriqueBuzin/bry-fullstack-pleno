@@ -1,9 +1,22 @@
 FROM node:20-alpine AS build
 
 WORKDIR /app
+COPY package*.json ./
+RUN npm ci
 COPY . .
-RUN npm install && npm run build
+RUN npm run build -- --configuration=production
 
-FROM nginx:alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+FROM httpd:2.4-alpine
+
+RUN sed -i 's/^#LoadModule rewrite_module/LoadModule rewrite_module/' \
+    /usr/local/apache2/conf/httpd.conf
+
+RUN echo "ServerName localhost" >> /usr/local/apache2/conf/httpd.conf
+
+COPY apache.conf /usr/local/apache2/conf/extra/angular.conf
+RUN echo "Include conf/extra/angular.conf" >> /usr/local/apache2/conf/httpd.conf
+
+COPY --from=build /app/dist/frontend /usr/local/apache2/htdocs
+
 EXPOSE 80
+CMD ["httpd-foreground"]

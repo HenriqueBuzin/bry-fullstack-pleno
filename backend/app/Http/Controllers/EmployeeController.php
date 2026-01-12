@@ -7,7 +7,6 @@ use App\Http\Requests\EmployeeUpdateRequest;
 use App\Models\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
@@ -28,20 +27,17 @@ class EmployeeController extends Controller
     {
         $data = $request->validated();
 
-        // 🔐 hash da senha
-        $data['password'] = Hash::make($data['password']);
-
-        // cria funcionário
+        // password é hasheada automaticamente no Model
         $employee = Employee::create($data);
 
         // upload do documento
-        if ($request->hasFile('documento')) {
-            $path = $request->file('documento')
+        if ($request->hasFile('document')) {
+            $path = $request->file('document')
                 ->store("documents/employees/{$employee->id}", 'public');
 
             $employee->update([
-                'documento_path' => $path,
-                'documento_mime' => $request->file('documento')->getMimeType(),
+                'document_path' => $path,
+                'document_mime' => $request->file('document')->getMimeType(),
             ]);
         }
 
@@ -59,12 +55,18 @@ class EmployeeController extends Controller
     /**
      * GET /employees/{id}
      */
-    public function show(Employee $employee): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        return response()->json(
-            $employee->load('companies'),
-            200
-        );
+        $employee = Employee::with('companies')->find($id);
+
+        if (!$employee) {
+            return response()->json(
+                ['message' => 'Funcionário não encontrado'],
+                404
+            );
+        }
+
+        return response()->json($employee, 200);
     }
 
     /**
@@ -76,25 +78,24 @@ class EmployeeController extends Controller
     ): JsonResponse {
         $data = $request->validated();
 
-        if (!empty($data['password'])) {
-            $data['password'] = Hash::make($data['password']);
-        } else {
+        // se password não veio, não altera
+        if (empty($data['password'])) {
             unset($data['password']);
         }
 
         $employee->update($data);
 
-        if ($request->hasFile('documento')) {
-            if ($employee->documento_path) {
-                Storage::disk('public')->delete($employee->documento_path);
+        if ($request->hasFile('document')) {
+            if ($employee->document_path) {
+                Storage::disk('public')->delete($employee->document_path);
             }
 
-            $path = $request->file('documento')
+            $path = $request->file('document')
                 ->store("documents/employees/{$employee->id}", 'public');
 
             $employee->update([
-                'documento_path' => $path,
-                'documento_mime' => $request->file('documento')->getMimeType(),
+                'document_path' => $path,
+                'document_mime' => $request->file('document')->getMimeType(),
             ]);
         }
 
@@ -113,8 +114,8 @@ class EmployeeController extends Controller
      */
     public function destroy(Employee $employee): JsonResponse
     {
-        if ($employee->documento_path) {
-            Storage::disk('public')->delete($employee->documento_path);
+        if ($employee->document_path) {
+            Storage::disk('public')->delete($employee->document_path);
         }
 
         $employee->delete();

@@ -11,6 +11,9 @@ class CompanyStoreRequest extends FormRequest
         return true;
     }
 
+    /**
+     * Normaliza CNPJ antes da validação
+     */
     protected function prepareForValidation(): void
     {
         $this->merge([
@@ -23,9 +26,15 @@ class CompanyStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => ['required', 'string', 'max:255'],
-            'cnpj' => ['required', 'digits:14', 'unique:companies,cnpj'],
-            'endereco' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+
+            'cnpj' => [
+                'required',
+                'digits:14',
+                'unique:companies,cnpj',
+            ],
+
+            'address' => ['required', 'string', 'max:255'],
 
             'employee_ids' => ['sometimes', 'array'],
             'employee_ids.*' => ['integer', 'exists:employees,id'],
@@ -39,8 +48,10 @@ class CompanyStoreRequest extends FormRequest
     {
         return [
             'cnpj.unique' => 'Este CNPJ já está cadastrado.',
+
             'required' => 'O campo :attribute é obrigatório.',
             'string' => 'O campo :attribute deve ser um texto.',
+            'integer' => 'O campo :attribute deve ser um número inteiro.',
             'array' => 'O campo :attribute deve ser uma lista.',
             'unique' => 'O valor informado para :attribute já está em uso.',
             'exists' => 'O valor selecionado para :attribute é inválido.',
@@ -52,9 +63,9 @@ class CompanyStoreRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'nome' => 'nome da empresa',
+            'name' => 'nome da empresa',
             'cnpj' => 'CNPJ',
-            'endereco' => 'endereço',
+            'address' => 'endereço',
 
             'employee_ids' => 'funcionários',
             'employee_ids.*' => 'funcionário',

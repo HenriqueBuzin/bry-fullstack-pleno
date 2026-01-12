@@ -15,7 +15,7 @@ class Employee extends Model
         'nome',
         'cpf',
         'email',
-        'endereco',
+        'address',
         'password',
         'documento_path',
         'documento_mime',

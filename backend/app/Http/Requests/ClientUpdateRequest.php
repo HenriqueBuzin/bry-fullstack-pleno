@@ -12,6 +12,9 @@ class ClientUpdateRequest extends FormRequest
         return true;
     }
 
+    /**
+     * Normaliza CPF antes da validação
+     */
     protected function prepareForValidation(): void
     {
         $this->merge([
@@ -31,34 +34,39 @@ class ClientUpdateRequest extends FormRequest
                 Rule::unique('clients', 'login')->ignore($this->route('client')),
                 'regex:/^[A-Za-z0-9._-]+$/',
             ],
-            'nome' => [
+
+            'name' => [
                 'required',
                 'string',
                 'max:255',
                 'regex:/^[A-Za-z ]+$/',
             ],
+
             'cpf' => [
                 'required',
                 'digits:11',
                 Rule::unique('clients', 'cpf')->ignore($this->route('client')),
             ],
+
             'email' => [
                 'required',
                 'email',
                 Rule::unique('clients', 'email')->ignore($this->route('client')),
             ],
-            'endereco' => [
+
+            'address' => [
                 'required',
                 'string',
                 'max:255',
             ],
+
             'password' => [
                 'nullable',
                 'string',
                 'min:6',
             ],
 
-            'documento' => [
+            'document' => [
                 'nullable',
                 'file',
                 'mimes:pdf,jpg,jpeg',
@@ -74,10 +82,12 @@ class ClientUpdateRequest extends FormRequest
     {
         return [
             'login.regex' => 'O login não pode conter acentuação.',
-            'nome.regex' => 'O nome não pode conter acentuação.',
-            'documento.mimes' => 'O documento deve ser PDF ou JPG.',
+            'name.regex' => 'O nome não pode conter acentuação.',
+            'document.mimes' => 'O documento deve ser PDF ou JPG.',
+
             'required' => 'O campo :attribute é obrigatório.',
             'string' => 'O campo :attribute deve ser um texto.',
+            'integer' => 'O campo :attribute deve ser um número inteiro.',
             'email' => 'O campo :attribute deve ser um e-mail válido.',
             'unique' => 'O valor informado para :attribute já está em uso.',
             'exists' => 'O valor selecionado para :attribute é inválido.',
@@ -93,15 +103,14 @@ class ClientUpdateRequest extends FormRequest
     {
         return [
             'login' => 'login',
-            'nome' => 'nome',
+            'name' => 'nome',
             'cpf' => 'CPF',
             'email' => 'e-mail',
-            'endereco' => 'endereço',
+            'address' => 'endereço',
             'password' => 'senha',
-            'documento' => 'documento',
+            'document' => 'documento',
             'company_ids' => 'empresas',
             'company_ids.*' => 'empresa',
         ];
     }
-
 }

@@ -75,33 +75,39 @@ services:
   # ============================
   # FRONTEND - DEV (Angular)
   # ============================
-  # frontend:
-  #   container_name: frontend
-  #   profiles: ["dev"]
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ./frontend:/app
-  #   ports:
-  #     - "4200:4200"
-  #   command: npm run start
-  #   networks:
-  #     - app-network
+  frontend:
+    container_name: frontend
+    profiles: ["dev"]
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "4200:4200"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - backend-apache
+    networks:
+      - app-network
 
-  # # ============================
-  # # FRONTEND - PROD (Build)
-  # # ============================
-  # frontend-prod:
-  #   container_name: frontend-prod
-  #   profiles: ["prod"]
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile.prod
-  #   ports:
-  #     - "4200:80"
-  #   networks:
-  #     - app-network
+  # ============================
+  # FRONTEND - PROD (Build)
+  # ============================
+  frontend-prod:
+    container_name: frontend-prod
+    profiles: ["prod"]
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend-apache-prod
+    networks:
+      - app-network
 
   # ============================
   # DATABASE - MYSQL

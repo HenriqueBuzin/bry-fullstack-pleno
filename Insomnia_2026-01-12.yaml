@@ -41,7 +41,7 @@ collection:
         meta:
           id: req_f3cb8a63ba32481f80469836731f7264
           created: 1768136184283
-          modified: 1768136229396
+          modified: 1768230050216
           isPrivate: false
           description: ""
           sortKey: -1768136184283
@@ -50,9 +50,9 @@ collection:
           mimeType: application/json
           text: |
             {
-              "nome": "Empresa Alpha",
+              "name": "Empresa Alpha",
               "cnpj": "12345678000100",
-              "endereco": "Rua A, 123"
+              "address": "Rua A, 123"
             }
         headers:
           - name: Content-Type
@@ -72,7 +72,7 @@ collection:
         meta:
           id: req_eb525e9db49041ffbfc3301ecce3097d
           created: 1768136237465
-          modified: 1768136243520
+          modified: 1768230063931
           isPrivate: false
           description: ""
           sortKey: -1768136116810.5
@@ -81,9 +81,9 @@ collection:
           mimeType: application/json
           text: |
             {
-              "nome": "Empresa Beta",
+              "name": "Empresa Beta",
               "cnpj": "98765432000199",
-              "endereco": "Av Central, 500",
+              "address": "Av Central, 500",
               "employee_ids": [1, 2],
               "client_ids": [1]
             }
@@ -126,7 +126,7 @@ collection:
         meta:
           id: req_ca6800f4f0a54e82baa8cc6f75d4cfc8
           created: 1768136314164
-          modified: 1768136335420
+          modified: 1768230077004
           isPrivate: false
           description: ""
           sortKey: -1761744789662.5
@@ -135,9 +135,9 @@ collection:
           mimeType: application/json
           text: |
             {
-              "nome": "Empresa Alpha Atualizada",
+              "name": "Empresa Alpha Atualizada",
               "cnpj": "12345678000100",
-              "endereco": "Rua Nova, 456",
+              "address": "Rua Nova, 456",
               "employee_ids": [2],
               "client_ids": []
             }
@@ -209,7 +209,7 @@ collection:
         meta:
           id: req_524398e649e544549cc47f0873851584
           created: 1768136433215
-          modified: 1768136449279
+          modified: 1768229987536
           isPrivate: false
           description: ""
           sortKey: -1768136037953
@@ -219,10 +219,10 @@ collection:
           text: |
             {
               "login": "joao.silva",
-              "nome": "Joao Silva",
+              "name": "Joao Silva",
               "cpf": "12345678900",
               "email": "joao@email.com",
-              "endereco": "Rua B, 10",
+              "address": "Rua B, 10",
               "password": "123456",
               "company_ids": [1]
             }
@@ -244,7 +244,7 @@ collection:
         meta:
           id: req_1538b09d79c647ed8d014e7d7ff31405
           created: 1768136486257
-          modified: 1768136590191
+          modified: 1768230006566
           isPrivate: false
           description: ""
           sortKey: -1768136035581
@@ -254,7 +254,7 @@ collection:
           params:
             - name: login
               value: maria.santos
-            - name: nome
+            - name: name
               value: Maria Santos
               description: ""
               disabled: false
@@ -266,7 +266,7 @@ collection:
               value: maria@email.com
               description: ""
               disabled: false
-            - name: endereco
+            - name: address
               value: Rua C, 20
               description: ""
               disabled: false
@@ -278,7 +278,7 @@ collection:
               value: "1"
               description: ""
               disabled: false
-            - name: documento
+            - name: document
               value: ""
               description: ""
               disabled: false
@@ -322,7 +322,7 @@ collection:
         meta:
           id: req_a41250122e8744c28bd47294fd993584
           created: 1768136683646
-          modified: 1768136696772
+          modified: 1768230017295
           isPrivate: false
           description: ""
           sortKey: -1768136033802
@@ -332,10 +332,10 @@ collection:
           text: |
             {
               "login": "joao.silva",
-              "nome": "Joao Silva Atualizado",
+              "name": "Joao Silva Atualizado",
               "cpf": "12345678900",
               "email": "joao@email.com",
-              "endereco": "Rua Alterada, 99",
+              "address": "Rua Alterada, 99",
               "company_ids": [2]
             }
         headers:
@@ -356,7 +356,7 @@ collection:
         meta:
           id: req_64b4e372b41e46528b9ca47f52b6bbe7
           created: 1768136729883
-          modified: 1768136852925
+          modified: 1768230035936
           isPrivate: false
           description: ""
           sortKey: -1768136033505.5
@@ -366,7 +366,7 @@ collection:
           params:
             - name: nome
               value: Joao Silva
-            - name: login
+            - name: name
               value: joao.silva
               description: ""
               disabled: false
@@ -378,7 +378,7 @@ collection:
               value: joao@email.com
               description: ""
               disabled: false
-            - name: endereco
+            - name: address
               value: Rua Nova
               description: ""
               disabled: false
@@ -386,7 +386,7 @@ collection:
               value: "1"
               description: ""
               disabled: false
-            - name: ""
+            - name: document
               value: ""
               description: ""
               disabled: false
@@ -459,7 +459,7 @@ collection:
         meta:
           id: req_1e9090da5ae74e22be73e0d0544ec3e3
           created: 1768136919637
-          modified: 1768148624540
+          modified: 1768229846312
           isPrivate: false
           description: ""
           sortKey: -1768136046017.5
@@ -469,10 +469,10 @@ collection:
           text: |
             {
               "login": "cliente01",
-              "nome": "Cliente Um",
+              "name": "Cliente Um",
               "cpf": "11223344557",
               "email": "cliente@email.com",
-              "endereco": "Rua D, 77",
+              "address": "Rua D, 77",
               "password": "123456",
               "company_ids": [1]
             }
@@ -494,7 +494,7 @@ collection:
         meta:
           id: req_863677c50a1f4fb99018bda81fd035c5
           created: 1768136947826
-          modified: 1768223233031
+          modified: 1768229924364
           isPrivate: false
           description: ""
           sortKey: -1768136044357.25
@@ -503,20 +503,20 @@ collection:
           mimeType: multipart/form-data
           params:
             - name: login
-              value: cliente02
-            - name: nome
+              value: cliente03
+            - name: name
               value: Cliente Dois
               description: ""
               disabled: false
             - name: cpf
-              value: "99887766554"
+              value: "99887766555"
               description: ""
               disabled: false
             - name: email
-              value: cliente2@email.com
+              value: cliente5@email.com
               description: ""
               disabled: false
-            - name: endereco
+            - name: address
               value: Rua E, 88
               description: ""
               disabled: false
@@ -528,7 +528,7 @@ collection:
               value: "1"
               description: ""
               disabled: true
-            - name: documento
+            - name: document
               value: ""
               description: ""
               disabled: false
@@ -573,7 +573,7 @@ collection:
         meta:
           id: req_ddbf6c446436455fbbf3fe4d40346c1a
           created: 1768137103747
-          modified: 1768137137974
+          modified: 1768229860128
           isPrivate: false
           description: ""
           sortKey: -1768136043112.0625
@@ -583,10 +583,10 @@ collection:
           text: |
             {
               "login": "cliente01",
-              "nome": "Cliente Um Atualizado",
+              "name": "Cliente Um Atualizado",
               "cpf": "11223344556",
               "email": "cliente@email.com",
-              "endereco": "Rua Nova, 100",
+              "address": "Rua Nova, 100",
               "company_ids": []
             }
         headers:
@@ -607,7 +607,7 @@ collection:
         meta:
           id: req_cb1fb1c141b942499ad4cf296e8bba75
           created: 1768137178466
-          modified: 1768137255647
+          modified: 1768229875025
           isPrivate: false
           description: ""
           sortKey: -1768136042904.5312
@@ -617,7 +617,7 @@ collection:
           params:
             - name: login
               value: cliente01
-            - name: nome
+            - name: name
               value: Cliente Um
               description: ""
               disabled: false
@@ -629,7 +629,7 @@ collection:
               value: cliente@email.com
               description: ""
               disabled: false
-            - name: endereco
+            - name: address
               value: Rua Nova
               description: ""
               disabled: false
@@ -637,7 +637,7 @@ collection:
               value: "1"
               description: ""
               disabled: false
-            - name: documento
+            - name: document
               value: ""
               description: ""
               disabled: false

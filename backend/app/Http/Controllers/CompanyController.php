@@ -45,12 +45,18 @@ class CompanyController extends Controller
     /**
      * GET /companies/{id}
      */
-    public function show(Company $company): JsonResponse
+    public function show(int $id): JsonResponse
     {
-        return response()->json(
-            $company->load(['employees', 'clients']),
-            200
-        );
+        $company = Company::with(['employees', 'clients'])->find($id);
+
+        if (!$company) {
+            return response()->json(
+                ['message' => 'Empresa não encontrada'],
+                404
+            );
+        }
+
+        return response()->json($company, 200);
     }
 
     /**
