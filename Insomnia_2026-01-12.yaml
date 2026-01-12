@@ -1,0 +1,710 @@
+type: collection.insomnia.rest/5.0
+schema_version: "5.1"
+name: Bry
+meta:
+  id: wrk_f9baf8dd1c4a468fbb1558d0c16d5a36
+  created: 1768135862056
+  modified: 1768135862056
+  description: ""
+collection:
+  - name: Empresas (companies)
+    meta:
+      id: fld_5a9664a5259d49f494eadae90db755e7
+      created: 1768135894843
+      modified: 1768135894843
+      sortKey: -1768135894843
+      description: ""
+    children:
+      - url: "{{ _.BASE_URL }}/companies"
+        name: Listar empresas
+        meta:
+          id: req_aee9ff6817df42e9980f80360e4fe832
+          created: 1768136030331
+          modified: 1768136278358
+          isPrivate: false
+          description: ""
+          sortKey: -1768136033209
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/companies"
+        name: Criar empresa sem vínculos
+        meta:
+          id: req_f3cb8a63ba32481f80469836731f7264
+          created: 1768136184283
+          modified: 1768136229396
+          isPrivate: false
+          description: ""
+          sortKey: -1768136184283
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "nome": "Empresa Alpha",
+              "cnpj": "12345678000100",
+              "endereco": "Rua A, 123"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/companies"
+        name: Criar empresa com vínculos
+        meta:
+          id: req_eb525e9db49041ffbfc3301ecce3097d
+          created: 1768136237465
+          modified: 1768136243520
+          isPrivate: false
+          description: ""
+          sortKey: -1768136116810.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "nome": "Empresa Beta",
+              "cnpj": "98765432000199",
+              "endereco": "Av Central, 500",
+              "employee_ids": [1, 2],
+              "client_ids": [1]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/companies/1"
+        name: Buscar empresa por id
+        meta:
+          id: req_cdfe4c7b058f4dd9b2a1b9bd67628b04
+          created: 1768136264695
+          modified: 1768136294338
+          isPrivate: false
+          description: ""
+          sortKey: -1763875204178
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/companies/1"
+        name: Atualizar empresa
+        meta:
+          id: req_ca6800f4f0a54e82baa8cc6f75d4cfc8
+          created: 1768136314164
+          modified: 1768136335420
+          isPrivate: false
+          description: ""
+          sortKey: -1761744789662.5
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "nome": "Empresa Alpha Atualizada",
+              "cnpj": "12345678000100",
+              "endereco": "Rua Nova, 456",
+              "employee_ids": [2],
+              "client_ids": []
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/companies/1"
+        name: Excluir empresa
+        meta:
+          id: req_5b099ae999c8488e92817c0546ecf551
+          created: 1768136349996
+          modified: 1768136363628
+          isPrivate: false
+          description: ""
+          sortKey: -1760679582404.75
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Funcionários (employees)
+    meta:
+      id: fld_f413966a22bb4e3782b40b566e93d121
+      created: 1768135908857
+      modified: 1768135928734
+      sortKey: -1768135908857
+      description: ""
+    children:
+      - url: "{{ _.BASE_URL }}/employees"
+        name: Listar funcionários
+        meta:
+          id: req_b286aba44aa7471ea138bf7d15df1a10
+          created: 1768136042697
+          modified: 1768136415430
+          isPrivate: false
+          description: ""
+          sortKey: -1768136042697
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/employees"
+        name: Criar funcionários
+        meta:
+          id: req_524398e649e544549cc47f0873851584
+          created: 1768136433215
+          modified: 1768136449279
+          isPrivate: false
+          description: ""
+          sortKey: -1768136037953
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "login": "joao.silva",
+              "nome": "Joao Silva",
+              "cpf": "12345678900",
+              "email": "joao@email.com",
+              "endereco": "Rua B, 10",
+              "password": "123456",
+              "company_ids": [1]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/employees"
+        name: Criar funcionários com documento
+        meta:
+          id: req_1538b09d79c647ed8d014e7d7ff31405
+          created: 1768136486257
+          modified: 1768136590191
+          isPrivate: false
+          description: ""
+          sortKey: -1768136035581
+        method: POST
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: login
+              value: maria.santos
+            - name: nome
+              value: Maria Santos
+              description: ""
+              disabled: false
+            - name: cpf
+              value: "98765432100"
+              description: ""
+              disabled: false
+            - name: email
+              value: maria@email.com
+              description: ""
+              disabled: false
+            - name: endereco
+              value: Rua C, 20
+              description: ""
+              disabled: false
+            - name: password
+              value: "123456"
+              description: ""
+              disabled: false
+            - name: company_ids[]
+              value: "1"
+              description: ""
+              disabled: false
+            - name: documento
+              value: ""
+              description: ""
+              disabled: false
+              type: file
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/employees/1"
+        name: Buscar funcionário por id
+        meta:
+          id: req_2efeb88d537d4f279b1114129831bfca
+          created: 1768136639990
+          modified: 1768136658519
+          isPrivate: false
+          description: ""
+          sortKey: -1768136034395
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/employees/1"
+        name: Atualizar funcionário
+        meta:
+          id: req_a41250122e8744c28bd47294fd993584
+          created: 1768136683646
+          modified: 1768136696772
+          isPrivate: false
+          description: ""
+          sortKey: -1768136033802
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "login": "joao.silva",
+              "nome": "Joao Silva Atualizado",
+              "cpf": "12345678900",
+              "email": "joao@email.com",
+              "endereco": "Rua Alterada, 99",
+              "company_ids": [2]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/employees/1"
+        name: Atualizar funcionário com documento
+        meta:
+          id: req_64b4e372b41e46528b9ca47f52b6bbe7
+          created: 1768136729883
+          modified: 1768136852925
+          isPrivate: false
+          description: ""
+          sortKey: -1768136033505.5
+        method: PUT
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: nome
+              value: Joao Silva
+            - name: login
+              value: joao.silva
+              description: ""
+              disabled: false
+            - name: cpf
+              value: "12345678900"
+              description: ""
+              disabled: false
+            - name: email
+              value: joao@email.com
+              description: ""
+              disabled: false
+            - name: endereco
+              value: Rua Nova
+              description: ""
+              disabled: false
+            - name: company_ids[]
+              value: "1"
+              description: ""
+              disabled: false
+            - name: ""
+              value: ""
+              description: ""
+              disabled: false
+              type: file
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/employees/1"
+        name: Remover funcionário
+        meta:
+          id: req_ff3f7c4fcdd94b0699b066c145a240a2
+          created: 1768136798739
+          modified: 1768136809811
+          isPrivate: false
+          description: ""
+          sortKey: -1768136033357.25
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Clientes (clients)
+    meta:
+      id: fld_09ee51f41e3c47418e40f0cee327b028
+      created: 1768136006414
+      modified: 1768136006414
+      sortKey: -1768136006414
+      description: ""
+    children:
+      - url: "{{ _.BASE_URL }}/clients"
+        name: Listar clientes
+        meta:
+          id: req_4072a51f39d6462fa29bb30f0f0f7430
+          created: 1768136049338
+          modified: 1768136902774
+          isPrivate: false
+          description: ""
+          sortKey: -1768136049338
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/clients"
+        name: Criar cliente
+        meta:
+          id: req_1e9090da5ae74e22be73e0d0544ec3e3
+          created: 1768136919637
+          modified: 1768148624540
+          isPrivate: false
+          description: ""
+          sortKey: -1768136046017.5
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "login": "cliente01",
+              "nome": "Cliente Um",
+              "cpf": "11223344557",
+              "email": "cliente@email.com",
+              "endereco": "Rua D, 77",
+              "password": "123456",
+              "company_ids": [1]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/clients"
+        name: Criar cliente com documento
+        meta:
+          id: req_863677c50a1f4fb99018bda81fd035c5
+          created: 1768136947826
+          modified: 1768223233031
+          isPrivate: false
+          description: ""
+          sortKey: -1768136044357.25
+        method: POST
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: login
+              value: cliente02
+            - name: nome
+              value: Cliente Dois
+              description: ""
+              disabled: false
+            - name: cpf
+              value: "99887766554"
+              description: ""
+              disabled: false
+            - name: email
+              value: cliente2@email.com
+              description: ""
+              disabled: false
+            - name: endereco
+              value: Rua E, 88
+              description: ""
+              disabled: false
+            - name: password
+              value: "123456"
+              description: ""
+              disabled: false
+            - name: company_ids[]
+              value: "1"
+              description: ""
+              disabled: true
+            - name: documento
+              value: ""
+              description: ""
+              disabled: false
+              fileName: C:\Users\henri\Desktop\CAD.pdf
+              type: file
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/clients/1"
+        name: Buscar cliente por id
+        meta:
+          id: req_5f229aecd38b46ab8ff664895c93452a
+          created: 1768137067732
+          modified: 1768137085513
+          isPrivate: false
+          description: ""
+          sortKey: -1768136043527.125
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/clients/1"
+        name: Atualizar cliente
+        meta:
+          id: req_ddbf6c446436455fbbf3fe4d40346c1a
+          created: 1768137103747
+          modified: 1768137137974
+          isPrivate: false
+          description: ""
+          sortKey: -1768136043112.0625
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "login": "cliente01",
+              "nome": "Cliente Um Atualizado",
+              "cpf": "11223344556",
+              "email": "cliente@email.com",
+              "endereco": "Rua Nova, 100",
+              "company_ids": []
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/clients/1"
+        name: Atualizar cliente com documento
+        meta:
+          id: req_cb1fb1c141b942499ad4cf296e8bba75
+          created: 1768137178466
+          modified: 1768137255647
+          isPrivate: false
+          description: ""
+          sortKey: -1768136042904.5312
+        method: PUT
+        body:
+          mimeType: multipart/form-data
+          params:
+            - name: login
+              value: cliente01
+            - name: nome
+              value: Cliente Um
+              description: ""
+              disabled: false
+            - name: cpf
+              value: "11223344556"
+              description: ""
+              disabled: false
+            - name: email
+              value: cliente@email.com
+              description: ""
+              disabled: false
+            - name: endereco
+              value: Rua Nova
+              description: ""
+              disabled: false
+            - name: company_ids[]
+              value: "1"
+              description: ""
+              disabled: false
+            - name: documento
+              value: ""
+              description: ""
+              disabled: false
+              type: file
+        headers:
+          - name: Content-Type
+            value: multipart/form-data
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.BASE_URL }}/clients/1"
+        name: Remover cliente
+        meta:
+          id: req_128ac39930e44ddf8e1e4b5613e2ac52
+          created: 1768137267660
+          modified: 1768137280307
+          isPrivate: false
+          description: ""
+          sortKey: -1768136042800.7656
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/12.0.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_0bcbfd625eed98062c76be3528e78b78b5ade108
+    created: 1768135862074
+    modified: 1768148636976
+  cookies:
+    - id: 725c973f-32aa-46a7-83a2-66e2a0ce6992
+      key: XSRF-TOKEN
+      value: eyJpdiI6Ik1BTXZKMGpUdzRJYW1oeVNtYlZtclE9PSIsInZhbHVlIjoiT3huc0Y0bURwamtPMUFzcnBQbkZ4VFFCYVMzdEpGS2tja2Z0M2JtVEt2KzZ4YUVYdVpGZklUNHQ5bWVSL3RZTWg5ZU5BTjA0VUJIOS9XTE9raUk2RTRneHhqVVZnY3BHNS94MFRROUYycmFJK3JuZ21wRzdaM3dhUEtlWWhtcnMiLCJtYWMiOiJkZDEyOTRlNmU5ODZlZWVhMDY4ZGMxZDIzMWY1YzhmZTU0YWQwM2U0YWVkOTE4NGQ0ZDI1MjRlZjYwZmJiZTA3IiwidGFnIjoiIn0%3D
+      domain: localhost
+      path: /
+      secure: false
+      httpOnly: false
+      hostOnly: true
+    - id: 8f790ebc-b20a-4e1e-94b2-715a81d1db3e
+      key: laravel-session
+      value: eyJpdiI6ImVRbFl6bUo2dlNPNktGeWdmN2ZQaGc9PSIsInZhbHVlIjoiWDZ4L2V4My9OS3lPL2ZKREt3ZFdNbkxDOXpudUNHSkdPaHMvY0JoOXRrcldNdXdXRS9OMC9hSE8yWkJmbW5RSDIrOHdjcWE3YXMyOGhoMkE1ZldMSzBRTG5OaEpZZEg3WmZlcmc4dm9lVFF2SW5OVDNPdms2Y2JJSEIvaWhFZDMiLCJtYWMiOiI0ZGNlMGI1MzNhNjk3ZGQ2YzEwNzk4MTM4NjM0NjQ4YTdjNGE2NDJjMmJkNjcyNmE5NTkzZDljMDE3MDQxODMyIiwidGFnIjoiIn0%3D
+      domain: localhost
+      path: /
+      secure: false
+      httpOnly: true
+      hostOnly: true
+environments:
+  name: Base Environment
+  meta:
+    id: env_0bcbfd625eed98062c76be3528e78b78b5ade108
+    created: 1768135862070
+    modified: 1768142690171
+    isPrivate: false
+  data:
+    BASE_URL: http://localhost:8080/api
