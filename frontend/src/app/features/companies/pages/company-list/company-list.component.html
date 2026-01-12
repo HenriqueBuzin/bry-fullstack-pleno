@@ -1,0 +1,41 @@
+<div class="container mt-4">
+
+  <h2>Empresas</h2>
+
+  <a class="btn btn-primary mb-3" routerLink="/empresas/novo">
+    Nova Empresa
+  </a>
+
+  <div *ngIf="loading" class="alert alert-info">
+    Carregando...
+  </div>
+
+  <table class="table table-striped" *ngIf="!loading">
+
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>CNPJ</th>
+        <th>Endereço</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let c of companies">
+        <td>{{ c.name }}</td>
+        <td>{{ formatarCnpj(c.cnpj) }}</td>
+        <td>{{ c.address }}</td>
+        <td>
+          <a
+            class="btn btn-sm btn-info"
+            [routerLink]="['/empresas', c.id]">
+            Detalhes
+          </a>
+        </td>
+      </tr>
+    </tbody>
+
+  </table>
+
+</div>

@@ -1,0 +1,42 @@
+<div class="container mt-4">
+
+  <h2>Funcionários</h2>
+
+  <a class="btn btn-primary mb-3" routerLink="/funcionarios/novo">
+    Novo Funcionário
+  </a>
+
+  <div *ngIf="loading" class="alert alert-info">
+    Carregando...
+  </div>
+
+  <table class="table table-striped" *ngIf="!loading">
+
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>CPF</th>
+        <th>E-mail</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let e of employees">
+        <td>{{ e.name }}</td>
+        <td>{{ formatarCpf(e.cpf) }}</td>
+        <td>{{ e.email }}</td>
+        <td>
+          <a
+            class="btn btn-sm btn-info"
+            [routerLink]="['/funcionarios', e.id]"
+          >
+            Detalhes
+          </a>
+        </td>
+      </tr>
+    </tbody>
+
+  </table>
+
+</div>

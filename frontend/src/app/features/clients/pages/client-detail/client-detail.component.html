@@ -1,0 +1,30 @@
+<div class="container mt-4" *ngIf="client && !loading">
+
+  <div class="d-flex align-items-center mb-3">
+    <button class="btn btn-secondary me-3" (click)="voltar()">← Voltar</button>
+    <h2 class="mb-0">{{ client.name }}</h2>
+  </div>
+
+  <p><strong>CPF:</strong> {{ formatarCpf(client.cpf) }}</p>
+  <p><strong>E-mail:</strong> {{ client.email }}</p>
+  <p><strong>Endereço:</strong> {{ client.address }}</p>
+
+  <hr>
+
+  <h4>Empresas</h4>
+
+  <ul *ngIf="client.companies?.length; else semEmpresas">
+    <li *ngFor="let e of client.companies">
+      {{ e.name }}
+    </li>
+  </ul>
+
+  <ng-template #semEmpresas>
+    <p>Nenhuma empresa vinculada.</p>
+  </ng-template>
+
+</div>
+
+<div *ngIf="loading" class="alert alert-info">
+  Carregando...
+</div>

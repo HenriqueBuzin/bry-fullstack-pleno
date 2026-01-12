@@ -1,0 +1,35 @@
+<div class="container mt-4" *ngIf="company">
+
+  <div class="d-flex align-items-center mb-3">
+    <button class="btn btn-secondary me-3" (click)="voltar()">← Voltar</button>
+    <h2 class="mb-0">{{ company.name }}</h2>
+  </div>
+
+  <p><strong>CNPJ:</strong> {{ formatCnpj(company.cnpj) }}</p>
+  <p><strong>Endereço:</strong> {{ company.address }}</p>
+
+  <hr>
+
+  <h4>Funcionários</h4>
+  <ul *ngIf="company.employees?.length; else semFuncionarios">
+    <li *ngFor="let f of company.employees">
+      {{ f.name }}
+    </li>
+  </ul>
+
+  <ng-template #semFuncionarios>
+    <p>Nenhum funcionário vinculado.</p>
+  </ng-template>
+
+  <h4>Clientes</h4>
+  <ul *ngIf="company.clients?.length; else semClientes">
+    <li *ngFor="let c of company.clients">
+      {{ c.name }}
+    </li>
+  </ul>
+
+  <ng-template #semClientes>
+    <p>Nenhum cliente vinculado.</p>
+  </ng-template>
+
+</div>

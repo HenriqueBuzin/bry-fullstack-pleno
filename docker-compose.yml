@@ -1,7 +1,4 @@
 services:
-  # ============================
-  # BACKEND - APACHE (DEV)
-  # ============================
   backend-apache:
     container_name: backend-apache
     profiles: ["dev"]
@@ -16,9 +13,6 @@ services:
     networks:
       - app-network
 
-  # ============================
-  # BACKEND - APACHE (PROD)
-  # ============================
   backend-apache-prod:
     container_name: backend-apache-prod
     profiles: ["prod"]
@@ -33,9 +27,6 @@ services:
     networks:
       - app-network
 
-  # ============================
-  # BACKEND - PHP-FPM (DEV)
-  # ============================
   backend-php:
     container_name: backend-php
     profiles: ["dev"]
@@ -53,9 +44,6 @@ services:
     networks:
       - app-network
 
-  # ============================
-  # BACKEND - PHP-FPM (PROD)
-  # ============================
   backend-php-prod:
     container_name: backend-php-prod
     profiles: ["prod"]
@@ -72,9 +60,6 @@ services:
         aliases:
           - backend-php
 
-  # ============================
-  # FRONTEND - DEV (Angular)
-  # ============================
   frontend:
     container_name: frontend
     profiles: ["dev"]
@@ -93,9 +78,6 @@ services:
     networks:
       - app-network
 
-  # ============================
-  # FRONTEND - PROD (Build)
-  # ============================
   frontend-prod:
     container_name: frontend-prod
     profiles: ["prod"]
@@ -109,9 +91,6 @@ services:
     networks:
       - app-network
 
-  # ============================
-  # DATABASE - MYSQL
-  # ============================
   db:
     container_name: db
     image: mysql:8.0
@@ -132,15 +111,9 @@ services:
     networks:
       - app-network
 
-# ============================
-# VOLUMES
-# ============================
 volumes:
   dbdata:
 
-# ============================
-# SECRETS
-# ============================
 secrets:
   db_user:
     file: ./docker/secrets/db_user.txt
@@ -149,9 +122,6 @@ secrets:
   db_root_password:
     file: ./docker/secrets/db_root_password.txt
 
-# ============================
-# NETWORK
-# ============================
 networks:
   app-network:
     driver: bridge

@@ -1,0 +1,46 @@
+<div class="container mt-4">
+
+  <div *ngIf="loading" class="alert alert-info">
+    Carregando...
+  </div>
+
+  <div *ngIf="employee && !loading">
+
+    <div class="d-flex align-items-center mb-3">
+      <button class="btn btn-secondary me-3" (click)="voltar()">← Voltar</button>
+      <h2 class="mb-0">{{ employee.name }}</h2>
+    </div>
+
+    <p><strong>Login:</strong> {{ employee.login }}</p>
+    <p><strong>CPF:</strong> {{ formatarCpf(employee.cpf) }}</p>
+    <p><strong>E-mail:</strong> {{ employee.email }}</p>
+    <p><strong>Endereço:</strong> {{ employee.address }}</p>
+
+    <div *ngIf="employee.document_path">
+      <p class="mb-1"><strong>Documento:</strong></p>
+      <a
+        class="btn btn-sm btn-outline-primary"
+        [href]="'http://localhost:8080/storage/' + employee.document_path"
+        target="_blank"
+      >
+        Ver documento
+      </a>
+    </div>
+
+    <hr>
+
+    <h4>Empresas</h4>
+
+    <ul *ngIf="employee.companies?.length; else semEmpresas">
+      <li *ngFor="let c of employee.companies">
+        {{ c.name }}
+      </li>
+    </ul>
+
+    <ng-template #semEmpresas>
+      <p>Nenhuma empresa vinculada.</p>
+    </ng-template>
+
+  </div>
+
+</div>

@@ -1,0 +1,38 @@
+<div class="container mt-4">
+
+  <div class="d-flex align-items-center mb-3">
+    <button class="btn btn-secondary me-3" (click)="voltar()">← Voltar</button>
+    <h2 class="mb-0">
+      {{ companyId ? 'Editar Empresa' : 'Nova Empresa' }}
+    </h2>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="salvar()">
+
+    <div class="mb-3">
+      <label class="form-label">Nome</label>
+      <input class="form-control" formControlName="name">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">CNPJ</label>
+      <input
+        class="form-control"
+        formControlName="cnpj"
+        maxlength="18"
+        placeholder="00.000.000/0000-00"
+        (input)="onCnpjInput($event)"
+      >
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Endereço</label>
+      <input class="form-control" formControlName="address">
+    </div>
+
+    <button class="btn btn-primary" type="submit" [disabled]="loading">
+      Salvar
+    </button>
+
+  </form>
+</div>

@@ -1,8 +1,5 @@
 FROM php:8.2-fpm
 
-# ----------------------------
-# Dependências do sistema
-# ----------------------------
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -15,37 +12,19 @@ RUN apt-get update && apt-get install -y \
     zip \
     mbstring
 
-# ----------------------------
-# Composer
-# ----------------------------
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# ----------------------------
-# Diretório de trabalho
-# ----------------------------
 WORKDIR /var/www/html
 
-# ----------------------------
-# Copia TODO o projeto Laravel
-# ----------------------------
 COPY . .
 
-# ----------------------------
-# Dependências de produção
-# ----------------------------
 RUN composer install \
     --no-dev \
     --optimize-autoloader \
     --no-interaction \
     --no-scripts
 
-# ----------------------------
-# Permissões definitivas
-# ----------------------------
 RUN chown -R www-data:www-data storage bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html
 
-# ----------------------------
-# PHP-FPM
-# ----------------------------
 CMD ["php-fpm"]
