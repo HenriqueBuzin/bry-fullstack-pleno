@@ -12,12 +12,8 @@ echo "⏳ Aguardando banco de dados..."
 sleep 5
 
 # 🗄️ Migrations (controladas por flag)
-if [ "$RUN_MIGRATIONS" = "true" ]; then
-  echo "🗄️ Rodando migrations (PROD)"
-  php artisan migrate --force
-else
-  echo "ℹ️ Migrations desativadas (RUN_MIGRATIONS != true)"
-fi
+echo "🗄️ Rodando migrations (PROD)"
+php artisan migrate --force
 
 echo "✅ PHP-FPM iniciado"
 exec "$@"
