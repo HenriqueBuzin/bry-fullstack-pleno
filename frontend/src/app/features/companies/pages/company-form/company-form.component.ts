@@ -2,7 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Company, CompanyService } from '../../services/company.service';
+
+import {
+  CompanyService,
+  CompanyPayload
+} from '../../services/company.service';
+
 import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 
 @Component({
@@ -13,6 +18,7 @@ import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 })
 export class CompanyFormComponent implements OnInit {
 
+  // ✅ somente required (conforme enunciado)
   form = this.fb.group({
     name: ['', Validators.required],
     cnpj: ['', Validators.required],
@@ -21,6 +27,10 @@ export class CompanyFormComponent implements OnInit {
 
   companyId?: number;
   loading = false;
+  submitted = false;
+
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -41,32 +51,58 @@ export class CompanyFormComponent implements OnInit {
   loadCompany(id: number): void {
     this.companyService.getById(id).subscribe(company => {
       this.form.patchValue({
-        ...company,
+        name: company.name,
+        address: company.address,
         cnpj: DocumentMaskUtil.formatCnpj(company.cnpj)
       });
     });
   }
 
+  onCnpjInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const formatted = DocumentMaskUtil.formatCnpj(input.value);
+    this.form.get('cnpj')?.setValue(formatted, { emitEvent: false });
+  }
+
+  private cnpjEhValido(cnpjFormatado: string): boolean {
+    const cnpj = DocumentMaskUtil.clear(cnpjFormatado || '');
+    return /^\d{14}$/.test(cnpj);
+  }
+
   salvar(): void {
+    this.submitted = true;
+    this.successMessage = null;
+    this.errorMessage = null;
+
     if (this.form.invalid) return;
+
+    if (!this.cnpjEhValido(this.form.value.cnpj!)) {
+      this.form.get('cnpj')?.setErrors({ invalidCnpj: true });
+      return;
+    }
 
     this.loading = true;
 
-    const payload: Company = {
-      ...this.form.value,
+    const payload: CompanyPayload = {
+      name: this.form.value.name!,
+      address: this.form.value.address!,
       cnpj: DocumentMaskUtil.clear(this.form.value.cnpj!)
-    } as Company;
+    };
 
-    const req = this.companyId
+    const request = this.companyId
       ? this.companyService.update(this.companyId, payload)
       : this.companyService.create(payload);
 
-    req.subscribe({
+    request.subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/companies']);
+        this.successMessage = 'Empresa salva com sucesso!';
+        this.router.navigate(['/empresas']);
       },
-      error: () => this.loading = false
+      error: () => {
+        this.loading = false;
+        this.errorMessage = 'Erro ao salvar empresa. Tente novamente.';
+      }
     });
   }
 
@@ -74,9 +110,13 @@ export class CompanyFormComponent implements OnInit {
     this.location.back();
   }
 
-  onCnpjInput(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    const formatted = DocumentMaskUtil.formatCnpj(input.value);
-    this.form.get('cnpj')?.setValue(formatted, { emitEvent: false });
+  campoInvalido(campo: string): boolean {
+    const control = this.form.get(campo);
+    return !!(control && control.invalid && (control.touched || this.submitted));
+  }
+
+  campoValido(campo: string): boolean {
+    const control = this.form.get(campo);
+    return !!(control && control.valid && (control.touched || this.submitted));
   }
 }

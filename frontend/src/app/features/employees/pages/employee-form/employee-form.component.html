@@ -7,62 +7,119 @@
     </h2>
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="salvar()">
+  <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
 
+    <!-- Login -->
     <div class="mb-3">
-      <label class="form-label">Login</label>
-      <input class="form-control" formControlName="login">
-      <small class="text-danger"
-             *ngIf="form.controls.login.errors?.['accent']">
-        Não use acentos
-      </small>
+      <label class="form-label">Login *</label>
+      <input
+        class="form-control"
+        formControlName="login"
+        [class.is-invalid]="campoInvalido('login')"
+        [class.is-valid]="campoValido('login')"
+      >
+      <div class="invalid-feedback">
+        <div *ngIf="form.controls.login.errors?.['required']">
+          Login é obrigatório
+        </div>
+        <div *ngIf="form.controls.login.errors?.['accent']">
+          Não use acentos
+        </div>
+      </div>
     </div>
 
+    <!-- Nome -->
     <div class="mb-3">
-      <label class="form-label">Nome</label>
-      <input class="form-control" formControlName="name">
-      <small class="text-danger"
-             *ngIf="form.controls.name.errors?.['accent']">
-        Não use acentos
-      </small>
+      <label class="form-label">Nome *</label>
+      <input
+        class="form-control"
+        formControlName="name"
+        [class.is-invalid]="campoInvalido('name')"
+        [class.is-valid]="campoValido('name')"
+      >
+      <div class="invalid-feedback">
+        <div *ngIf="form.controls.name.errors?.['required']">
+          Nome é obrigatório
+        </div>
+        <div *ngIf="form.controls.name.errors?.['accent']">
+          Não use acentos
+        </div>
+      </div>
     </div>
 
+    <!-- CPF -->
     <div class="mb-3">
-      <label class="form-label">CPF</label>
+      <label class="form-label">CPF *</label>
       <input
         class="form-control"
         formControlName="cpf"
         maxlength="14"
         placeholder="000.000.000-00"
         (input)="onCpfInput($event)"
-      />
+        [class.is-invalid]="campoInvalido('cpf')"
+        [class.is-valid]="campoValido('cpf')"
+      >
+      <div class="invalid-feedback">
+        CPF é obrigatório
+      </div>
     </div>
 
+    <!-- Email -->
     <div class="mb-3">
-      <label class="form-label">E-mail</label>
-      <input class="form-control" formControlName="email">
+      <label class="form-label">E-mail *</label>
+      <input
+        class="form-control"
+        formControlName="email"
+        [class.is-invalid]="campoInvalido('email')"
+        [class.is-valid]="campoValido('email')"
+      >
+      <div class="invalid-feedback">
+        E-mail inválido
+      </div>
     </div>
 
+    <!-- Endereço -->
     <div class="mb-3">
-      <label class="form-label">Endereço</label>
-      <input class="form-control" formControlName="address">
+      <label class="form-label">Endereço *</label>
+      <input
+        class="form-control"
+        formControlName="address"
+        [class.is-invalid]="campoInvalido('address')"
+        [class.is-valid]="campoValido('address')"
+      >
+      <div class="invalid-feedback">
+        Endereço é obrigatório
+      </div>
     </div>
 
+    <!-- Senha -->
     <div class="mb-3">
-      <label class="form-label">Senha</label>
-      <input type="password" class="form-control" formControlName="password">
+      <label class="form-label">Senha *</label>
+      <input
+        type="password"
+        class="form-control"
+        formControlName="password"
+        [class.is-invalid]="campoInvalido('password')"
+        [class.is-valid]="campoValido('password')"
+      >
+      <div class="invalid-feedback">
+        Senha é obrigatória
+      </div>
     </div>
 
+    <!-- Documento -->
     <div class="mb-3">
       <label class="form-label">Documento (PDF ou JPG)</label>
       <input
         type="file"
         class="form-control"
-        (change)="onFileChange($event)">
+        (change)="onFileChange($event)"
+        accept=".pdf,.jpg,.jpeg"
+      >
     </div>
 
     <button class="btn btn-primary" type="submit" [disabled]="loading">
-      Salvar
+      {{ loading ? 'Salvando...' : 'Salvar' }}
     </button>
 
   </form>

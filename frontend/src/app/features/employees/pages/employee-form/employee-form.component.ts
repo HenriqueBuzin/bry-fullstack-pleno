@@ -1,18 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Employee, EmployeeService } from '../../services/employee.service';
+
+import {
+  EmployeeService,
+  EmployeePayload
+} from '../../services/employee.service';
+
 import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 
-function noAccentValidator(control: any) {
+/**
+ * Validador: impede acentuação
+ * (exigência do enunciado)
+ */
+function noAccentValidator(control: AbstractControl): ValidationErrors | null {
   const value = control.value;
+  if (!value) return null;
 
-  if (!value) {
-    return null;
-  }
-
-  const regex = /^[A-Za-z0-9._-]+$/;
+  const regex = /^[A-Za-z0-9._\- ]+$/;
   return regex.test(value) ? null : { accent: true };
 }
 
@@ -36,6 +42,8 @@ export class EmployeeFormComponent implements OnInit {
 
   employeeId?: number;
   loading = false;
+  submitted = false;
+
   selectedFile?: File;
 
   constructor(
@@ -57,9 +65,16 @@ export class EmployeeFormComponent implements OnInit {
   loadEmployee(id: number): void {
     this.employeeService.getById(id).subscribe(employee => {
       this.form.patchValue({
-        ...employee,
-        cpf: DocumentMaskUtil.formatCpf(employee.cpf)
+        login: employee.login,
+        name: employee.name,
+        cpf: DocumentMaskUtil.formatCpf(employee.cpf),
+        email: employee.email,
+        address: employee.address
       });
+
+      // senha não volta do backend
+      this.form.get('password')?.clearValidators();
+      this.form.get('password')?.updateValueAndValidity();
     });
   }
 
@@ -69,24 +84,34 @@ export class EmployeeFormComponent implements OnInit {
     this.form.get('cpf')?.setValue(formatted, { emitEvent: false });
   }
 
-  onFileChange(event: any): void {
-    this.selectedFile = event.target.files[0];
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files?.length) {
+      this.selectedFile = input.files[0];
+    }
   }
 
   salvar(): void {
+    this.submitted = true;
+
     if (this.form.invalid) return;
 
     this.loading = true;
 
+    const payload: EmployeePayload = {
+      login: this.form.value.login!,
+      name: this.form.value.name!,
+      cpf: DocumentMaskUtil.clear(this.form.value.cpf!),
+      email: this.form.value.email!,
+      address: this.form.value.address!,
+      password: this.form.value.password || undefined
+    };
+
     const formData = new FormData();
 
-    Object.entries(this.form.value).forEach(([key, value]) => {
-      if (!value) return;
-
-      if (key === 'cpf') {
-        formData.append(key, DocumentMaskUtil.clear(value as string));
-      } else {
-        formData.append(key, value as any);
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value) {
+        formData.append(key, value);
       }
     });
 
@@ -103,11 +128,23 @@ export class EmployeeFormComponent implements OnInit {
         this.loading = false;
         this.router.navigate(['/employees']);
       },
-      error: () => this.loading = false
+      error: () => {
+        this.loading = false;
+      }
     });
   }
 
   voltar(): void {
     this.location.back();
+  }
+
+  campoInvalido(campo: string): boolean {
+    const control = this.form.get(campo);
+    return !!(control && control.invalid && (control.touched || this.submitted));
+  }
+
+  campoValido(campo: string): boolean {
+    const control = this.form.get(campo);
+    return !!(control && control.valid && (control.touched || this.submitted));
   }
 }

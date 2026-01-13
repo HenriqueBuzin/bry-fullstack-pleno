@@ -7,31 +7,65 @@
     </h2>
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="salvar()">
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
 
     <div class="mb-3">
-      <label class="form-label">Nome</label>
-      <input class="form-control" formControlName="name">
+      <label class="form-label">Nome *</label>
+      <input
+        class="form-control"
+        formControlName="name"
+        [class.is-invalid]="campoInvalido('name')"
+        [class.is-valid]="campoValido('name')"
+      >
+      <div class="invalid-feedback">
+        Nome é obrigatório
+      </div>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">CNPJ</label>
+      <label class="form-label">CNPJ *</label>
       <input
         class="form-control"
         formControlName="cnpj"
         maxlength="18"
         placeholder="00.000.000/0000-00"
         (input)="onCnpjInput($event)"
+        [class.is-invalid]="campoInvalido('cnpj')"
+        [class.is-valid]="campoValido('cnpj')"
       >
+      <div class="invalid-feedback">
+        <div *ngIf="form.controls.cnpj.errors?.['required']">
+          CNPJ é obrigatório
+        </div>
+        <div *ngIf="form.controls.cnpj.errors?.['invalidCnpj']">
+          CNPJ inválido
+        </div>
+      </div>
     </div>
 
     <div class="mb-3">
-      <label class="form-label">Endereço</label>
-      <input class="form-control" formControlName="address">
+      <label class="form-label">Endereço *</label>
+      <input
+        class="form-control"
+        formControlName="address"
+        [class.is-invalid]="campoInvalido('address')"
+        [class.is-valid]="campoValido('address')"
+      >
+      <div class="invalid-feedback">
+        Endereço é obrigatório
+      </div>
     </div>
 
     <button class="btn btn-primary" type="submit" [disabled]="loading">
-      Salvar
+      {{ loading ? 'Salvando...' : 'Salvar' }}
     </button>
 
   </form>

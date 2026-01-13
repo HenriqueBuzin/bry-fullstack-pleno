@@ -3,12 +3,16 @@ import { Observable } from 'rxjs';
 import { ApiBaseService } from '../../../core/services/api-base.service';
 
 export interface Client {
-  id?: number;
+  id: number;
+  login: string;
   name: string;
   cpf: string;
   email: string;
   address: string;
-  companies?: any[];
+  companies?: {
+    id: number;
+    name: string;
+  }[];
 }
 
 @Injectable({
@@ -28,11 +32,11 @@ export class ClientService {
     return this.api.get<Client>(`${this.endpoint}/${id}`);
   }
 
-  create(data: Client): Observable<Client> {
+  create(data: FormData): Observable<Client> {
     return this.api.post<Client>(this.endpoint, data);
   }
 
-  update(id: number, data: Client): Observable<Client> {
+  update(id: number, data: FormData): Observable<Client> {
     return this.api.put<Client>(`${this.endpoint}/${id}`, data);
   }
 

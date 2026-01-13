@@ -2,13 +2,38 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiBaseService } from '../../../core/services/api-base.service';
 
+/**
+ * Tipos mínimos para relacionamento
+ */
+export interface EmployeeSummary {
+  id: number;
+  name: string;
+}
+
+export interface ClientSummary {
+  id: number;
+  name: string;
+}
+
+/**
+ * Entidade Company (GET)
+ */
 export interface Company {
-  id?: number;
+  id: number;
   name: string;
   cnpj: string;
   address: string;
-  employees: any[];
-  clients: any[];
+  employees: EmployeeSummary[];
+  clients: ClientSummary[];
+}
+
+/**
+ * Payload Company (POST / PUT)
+ */
+export interface CompanyPayload {
+  name: string;
+  cnpj: string;
+  address: string;
 }
 
 @Injectable({
@@ -28,11 +53,11 @@ export class CompanyService {
     return this.api.get<Company>(`${this.endpoint}/${id}`);
   }
 
-  create(data: Company): Observable<Company> {
+  create(data: CompanyPayload): Observable<Company> {
     return this.api.post<Company>(this.endpoint, data);
   }
 
-  update(id: number, data: Company): Observable<Company> {
+  update(id: number, data: CompanyPayload): Observable<Company> {
     return this.api.put<Company>(`${this.endpoint}/${id}`, data);
   }
 

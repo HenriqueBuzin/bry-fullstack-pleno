@@ -26,5 +26,4 @@ export class DocumentMaskUtil {
   static clear(value: string): string {
     return value ? value.replace(/\D/g, '') : '';
   }
-  
 }

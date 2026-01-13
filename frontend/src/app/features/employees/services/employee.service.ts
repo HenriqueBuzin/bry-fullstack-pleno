@@ -2,15 +2,39 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiBaseService } from '../../../core/services/api-base.service';
 
+/**
+ * Relacionamento simples com empresa
+ */
+export interface CompanySummary {
+  id: number;
+  name: string;
+}
+
+/**
+ * Entidade Employee (GET)
+ */
 export interface Employee {
-  id?: number;
+  id: number;
   login: string;
   name: string;
   cpf: string;
   email: string;
   address: string;
-  companies?: any[];
+  companies?: CompanySummary[];
   document_path?: string;
+}
+
+/**
+ * ✅ PAYLOAD (PRECISA ESTAR EXPORTADO)
+ */
+export interface EmployeePayload {
+  login: string;
+  name: string;
+  cpf: string;
+  email: string;
+  address: string;
+  password?: string;
+  company_ids?: number[];
 }
 
 @Injectable({
@@ -30,11 +54,11 @@ export class EmployeeService {
     return this.api.get<Employee>(`${this.endpoint}/${id}`);
   }
 
-  create(data: Employee): Observable<Employee> {
+  create(data: FormData): Observable<Employee> {
     return this.api.post<Employee>(this.endpoint, data);
   }
 
-  update(id: number, data: Employee): Observable<Employee> {
+  update(id: number, data: FormData): Observable<Employee> {
     return this.api.put<Employee>(`${this.endpoint}/${id}`, data);
   }
 
