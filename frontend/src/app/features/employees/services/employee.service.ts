@@ -32,7 +32,8 @@ export class EmployeeService {
     return this.api.delete<void>(`${this.endpoint}/${id}`);
   }
 
-  getDocumentoUrl(path: string): string {
-    return this.api.getFileUrl(`storage/${path}`);
+  getDocumentDownloadUrl(id: number): string {
+    return this.api.downloadUrl(`${this.endpoint}/${id}/document`);
   }
+
 }

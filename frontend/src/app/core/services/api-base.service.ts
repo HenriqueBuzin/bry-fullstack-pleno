@@ -9,7 +9,6 @@ export class ApiBaseService {
 
   private readonly baseUrl = 'http://localhost:8080/api';
 
-  private readonly publicUrl = 'http://localhost:8080';
 
   constructor(private http: HttpClient) {}
 
@@ -29,8 +28,8 @@ export class ApiBaseService {
     return this.http.delete<T>(`${this.baseUrl}/${endpoint}`);
   }
 
-  getFileUrl(path: string): string {
-    return `${this.publicUrl}/${path}`;
+  downloadUrl(endpoint: string): string {
+    return `${this.baseUrl}/${endpoint}`;
   }
 
 }

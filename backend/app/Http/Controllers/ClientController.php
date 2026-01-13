@@ -117,4 +117,22 @@ class ClientController extends Controller
 
         return response()->json(null, 204);
     }
+
+    /**
+     * GET /clients/{client}/document
+     */
+    public function downloadDocument(Client $client)
+    {
+        if (!$client->document_path) {
+            return response()->json(
+                ['message' => 'Documento não encontrado'],
+                404
+            );
+        }
+
+        return Storage::disk('public')->download(
+            $client->document_path
+        );
+    }
+
 }

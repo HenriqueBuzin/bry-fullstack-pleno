@@ -31,4 +31,5 @@ export class CompanyService {
   delete(id: number): Observable<void> {
     return this.api.delete<void>(`${this.endpoint}/${id}`);
   }
+  
 }

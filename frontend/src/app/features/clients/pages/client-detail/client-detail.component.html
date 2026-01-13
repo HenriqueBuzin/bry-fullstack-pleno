@@ -9,20 +9,11 @@
     <h2 class="mb-0">{{ client.name }}</h2>
 
     <div class="d-flex gap-2">
-      <a
-        class="btn btn-warning"
-        title="Editar"
-        [routerLink]="['/clientes', client.id, 'editar']"
-      >
+      <a class="btn btn-warning" title="Editar" [routerLink]="['/clientes', client.id, 'editar']">
         <i class="bi bi-pencil"></i>
       </a>
 
-      <button
-        class="btn btn-danger"
-        title="Excluir"
-        (click)="excluir()"
-        [disabled]="deleting"
-      >
+      <button class="btn btn-danger" title="Excluir" (click)="excluir()" [disabled]="deleting">
         <i *ngIf="!deleting" class="bi bi-trash"></i>
         <span *ngIf="deleting" class="spinner-border spinner-border-sm"></span>
       </button>
@@ -80,12 +71,7 @@
   <h4>Documento</h4>
 
   <div *ngIf="client.document_path; else semDocumento">
-    <a
-      class="btn btn-outline-primary"
-      [href]="clientService.getDocumentoUrl(client.document_path)"
-      target="_blank"
-      download
-    >
+    <a class="btn btn-outline-primary" [href]="clientService.getDocumentDownloadUrl(client.id)" target="_blank">
       <i class="bi bi-download"></i>
       Baixar documento
     </a>

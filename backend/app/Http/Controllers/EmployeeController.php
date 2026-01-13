@@ -122,4 +122,22 @@ class EmployeeController extends Controller
 
         return response()->json(null, 204);
     }
+
+    /**
+     * GET /employees/{employee}/document
+     */
+    public function downloadDocument(Employee $employee)
+    {
+        if (!$employee->document_path) {
+            return response()->json(
+                ['message' => 'Documento não encontrado'],
+                404
+            );
+        }
+
+        return Storage::disk('public')->download(
+            $employee->document_path
+        );
+    }
+
 }

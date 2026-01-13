@@ -76,9 +76,8 @@
 
     <h4>Documento</h4>
 
-    <div *ngIf="employee.document_path; else semDocumento">
-      <a class="btn btn-outline-primary" [href]="employeeService.getDocumentoUrl(employee.document_path)"
-        target="_blank" download>
+    <div *ngIf="employee?.document_path; else semDocumento">
+      <a class="btn btn-outline-primary" [href]="employeeService.getDocumentDownloadUrl(employee.id)" target="_blank">
         <i class="bi bi-download"></i>
         Baixar documento
       </a>
