@@ -17,7 +17,7 @@ composer install --no-interaction
 
 # ⏳ Aguarda banco
 echo "⏳ Aguardando banco de dados..."
-sleep 10
+sleep 30
 
 # 🔑 Garante APP_KEY
 if [ -z "$APP_KEY" ]; then

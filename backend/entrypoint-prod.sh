@@ -4,14 +4,14 @@ set -e
 
 echo "🚀 Inicializando container PHP (PROD)"
 
-# Garante que estamos no diretório certo
+# Garante diretório
 cd /var/www/html
 
 # ⏳ Aguarda banco
 echo "⏳ Aguardando banco de dados..."
-sleep 10
+sleep 30
 
-# 🗄️ Migrations (controladas por flag)
+# 🗄️ Migrations
 echo "🗄️ Rodando migrations (PROD)"
 php artisan migrate --force
 
