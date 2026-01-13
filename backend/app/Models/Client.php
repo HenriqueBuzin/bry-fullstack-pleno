@@ -17,8 +17,8 @@ class Client extends Model
         'email',
         'address',
         'password',
-        'documento_path',
-        'documento_mime',
+        'document_path',
+        'document_mime',
     ];
 
     protected $hidden = [

@@ -1,16 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  NonNullableFormBuilder,
-  Validators,
-  FormControl
-} from '@angular/forms';
+import { ReactiveFormsModule, NonNullableFormBuilder, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-
-import { ClientService, Client } from '../../services/client.service';
-import { Company, CompanyService } from '../../../companies/services/company.service';
-
+import { ClientService } from '../../services/client.service';
+import { Client } from '../../../../shared/models/client.model';
+import { CompanyService } from '../../../companies/services/company.service';
+import { Company } from '../../../../shared/models/company.model';
 import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 import { DocumentValidationsUtil } from '../../../../shared/utils/document-validations.utils';
 
@@ -34,7 +29,7 @@ export class ClientFormComponent implements OnInit {
     cpf: this.fb.control('', [Validators.required, DocumentValidationsUtil.cpf]),
     email: this.fb.control('', [Validators.required, DocumentValidationsUtil.email]),
     address: this.fb.control('', [Validators.required]),
-    password: this.fb.control('', [Validators.required, Validators.minLength(6)]),
+    password: this.fb.control(''),
     company_ids: this.fb.control<number[]>([])
   });
 
@@ -49,7 +44,7 @@ export class ClientFormComponent implements OnInit {
     private companyService: CompanyService,
     private route: ActivatedRoute,
     private location: Location
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadCompanies();
@@ -58,9 +53,6 @@ export class ClientFormComponent implements OnInit {
     if (id) {
       this.clientId = Number(id);
       this.loadClient(this.clientId);
-
-      this.form.controls.password.clearValidators();
-      this.form.controls.password.updateValueAndValidity();
     }
   }
 
@@ -130,6 +122,20 @@ export class ClientFormComponent implements OnInit {
 
     this.loading = true;
 
+    const password = this.form.controls.password.value;
+
+    if (!this.clientId && !password) {
+      this.form.controls.password.setErrors({ required: true });
+      this.loading = false;
+      return;
+    }
+
+    if (password && password.length < 6) {
+      this.form.controls.password.setErrors({ minlength: true });
+      this.loading = false;
+      return;
+    }
+
     const formData = new FormData();
 
     formData.append('login', this.form.controls.login.value);
@@ -138,17 +144,27 @@ export class ClientFormComponent implements OnInit {
     formData.append('email', this.form.controls.email.value);
     formData.append('address', this.form.controls.address.value);
 
-    if (!this.clientId) {
-      formData.append('password', this.form.controls.password.value);
+    if (password) {
+      formData.append('password', password);
     }
 
-    this.form.controls.company_ids.value.forEach(id =>
-      formData.append('company_ids[]', String(id))
-    );
+    const companyIds = this.form.controls.company_ids.value;
+
+    if (companyIds.length === 0) {
+      formData.append('company_ids', '[]');
+    } else {
+      companyIds.forEach(id =>
+        formData.append('company_ids[]', String(id))
+      );
+    }
 
     const file = this.documentControl.value;
     if (file) {
       formData.append('document', file, file.name);
+    }
+
+    if (this.clientId) {
+      formData.append('_method', 'PUT');
     }
 
     const request = this.clientId
@@ -158,11 +174,12 @@ export class ClientFormComponent implements OnInit {
     request.subscribe({
       next: () => {
         this.loading = false;
-        this.successMessage = this.clientId
-          ? 'Cliente atualizado com sucesso!'
-          : 'Cliente cadastrado com sucesso!';
 
-        if (!this.clientId) {
+        if (this.clientId) {
+          this.location.back();
+        } else {
+          this.successMessage = 'Cliente cadastrado com sucesso!';
+
           this.form.reset({
             login: '',
             name: '',
@@ -172,6 +189,7 @@ export class ClientFormComponent implements OnInit {
             password: '',
             company_ids: []
           });
+
           this.documentControl.setValue(null);
           this.submitted = false;
         }

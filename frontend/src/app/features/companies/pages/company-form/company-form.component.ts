@@ -2,12 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import {
-  CompanyService,
-  CompanyPayload
-} from '../../services/company.service';
-
+import { CompanyService } from '../../services/company.service';
+import { CompanyPayload } from '../../../../shared/models/company.model';
 import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 
 @Component({
@@ -38,7 +34,7 @@ export class CompanyFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private location: Location
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -97,9 +93,15 @@ export class CompanyFormComponent implements OnInit {
     request.subscribe({
       next: () => {
         this.loading = false;
-        this.successMessage = 'Empresa salva com sucesso!';
-        this.router.navigate(['/empresas']);
-      },
+
+        if (this.companyId) {
+          this.location.back();
+        } else {
+          this.successMessage = 'Empresa cadastrada com sucesso!';
+          this.router.navigate(['/empresas']);
+        }
+      }
+      ,
       error: err => {
         this.loading = false;
         const result = this.extractMessages(err);

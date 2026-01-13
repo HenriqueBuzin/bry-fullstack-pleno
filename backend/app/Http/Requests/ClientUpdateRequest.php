@@ -17,6 +17,16 @@ class ClientUpdateRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        if ($this->has('company_ids') && is_string($this->company_ids)) {
+            $decoded = json_decode($this->company_ids, true);
+
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $this->merge([
+                    'company_ids' => $decoded,
+                ]);
+            }
+        }
+
         $this->merge([
             'cpf' => isset($this->cpf)
                 ? preg_replace('/\D/', '', $this->cpf)
@@ -32,7 +42,7 @@ class ClientUpdateRequest extends FormRequest
                 'string',
                 'max:50',
                 Rule::unique('clients', 'login')->ignore($this->route('client')),
-                'regex:/^[A-Za-z0-9._-]+$/',
+                'regex:/^[A-Za-z0-9 ]+$/',
             ],
 
             'name' => [

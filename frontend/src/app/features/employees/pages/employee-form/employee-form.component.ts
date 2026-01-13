@@ -1,21 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import {
-  ReactiveFormsModule,
-  FormBuilder,
-  Validators
-} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import {
-  EmployeeService,
-  EmployeePayload
-} from '../../services/employee.service';
+import { EmployeeService } from '../../services/employee.service';
+import { EmployeePayload } from '../../../../shared/models/employee.model';
 
-import {
-  Company,
-  CompanyService
-} from '../../../companies/services/company.service';
+import { CompanyService } from '../../../companies/services/company.service';
+import { Company } from '../../../../shared/models/company.model';
 
 import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 import { DocumentValidationsUtil } from '../../../../shared/utils/document-validations.utils';
@@ -34,7 +26,7 @@ export class EmployeeFormComponent implements OnInit {
     cpf: ['', [Validators.required, DocumentValidationsUtil.cpf]],
     email: ['', [Validators.required, DocumentValidationsUtil.email]],
     address: ['', Validators.required],
-    password: ['', Validators.required],
+    password: [''],
     company_ids: [[] as number[]]
   });
 
@@ -55,7 +47,7 @@ export class EmployeeFormComponent implements OnInit {
     private companyService: CompanyService,
     private route: ActivatedRoute,
     private location: Location
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.loadCompanies();
@@ -128,28 +120,54 @@ export class EmployeeFormComponent implements OnInit {
 
     this.loading = true;
 
+    const password = this.form.value.password;
+
+    if (!this.employeeId && !password) {
+      this.form.get('password')?.setErrors({ required: true });
+      this.loading = false;
+      return;
+    }
+
+    if (password && password.length < 6) {
+      this.form.get('password')?.setErrors({ minlength: true });
+      this.loading = false;
+      return;
+    }
+
     const payload: EmployeePayload = {
       login: this.form.value.login!,
       name: this.form.value.name!,
       cpf: DocumentMaskUtil.clear(this.form.value.cpf!),
       email: this.form.value.email!,
       address: this.form.value.address!,
-      password: this.form.value.password || undefined,
+      password: password || undefined,
       company_ids: this.companyIds
     };
 
     const formData = new FormData();
 
     Object.entries(payload).forEach(([key, value]) => {
+
       if (Array.isArray(value)) {
-        value.forEach(v => formData.append(`${key}[]`, String(v)));
-      } else if (value) {
-        formData.append(key, value);
+        if (value.length === 0) {
+          formData.append(key, '[]');
+        } else {
+          value.forEach(v => formData.append(`${key}[]`, String(v)));
+        }
+        return;
+      }
+
+      if (value !== undefined && value !== null && value !== '') {
+        formData.append(key, String(value));
       }
     });
 
     if (this.selectedFile) {
       formData.append('document', this.selectedFile);
+    }
+
+    if (this.employeeId) {
+      formData.append('_method', 'PUT');
     }
 
     const request = this.employeeId
@@ -159,9 +177,25 @@ export class EmployeeFormComponent implements OnInit {
     request.subscribe({
       next: () => {
         this.loading = false;
-        this.successMessage = this.employeeId
-          ? 'Funcionário atualizado com sucesso!'
-          : 'Funcionário cadastrado com sucesso!';
+
+        if (this.employeeId) {
+          this.location.back();
+        } else {
+          this.successMessage = 'Funcionário cadastrado com sucesso!';
+
+          this.form.reset({
+            login: '',
+            name: '',
+            cpf: '',
+            email: '',
+            address: '',
+            password: '',
+            company_ids: []
+          });
+
+          this.selectedFile = undefined;
+          this.submitted = false;
+        }
       },
       error: err => {
         this.loading = false;

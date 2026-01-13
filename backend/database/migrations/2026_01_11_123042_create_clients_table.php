@@ -20,8 +20,8 @@ return new class extends Migration
             $table->string('address');
             $table->string('password');
 
-            $table->string('documento_path')->nullable();
-            $table->string('documento_mime')->nullable();
+            $table->string('document_path')->nullable();
+            $table->string('document_mime')->nullable();
 
             $table->timestamps();
         });

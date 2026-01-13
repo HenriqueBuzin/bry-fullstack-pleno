@@ -1,10 +1,12 @@
 <div class="container mt-4">
 
-  <h2>Clientes</h2>
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0">Clientes</h2>
 
-  <a class="btn btn-primary mb-3" routerLink="/clientes/novo">
-    Novo Cliente
-  </a>
+    <a class="btn btn-primary" routerLink="/clientes/novo">
+      Novo Cliente
+    </a>
+  </div>
 
   <div *ngIf="loading" class="alert alert-info">
     Carregando...
@@ -17,7 +19,7 @@
         <th>Nome</th>
         <th>CPF</th>
         <th>E-mail</th>
-        <th>Ações</th>
+        <th style="width: 200px">Ações</th>
       </tr>
     </thead>
 
@@ -26,11 +28,21 @@
         <td>{{ c.name }}</td>
         <td>{{ formatarCpf(c.cpf) }}</td>
         <td>{{ c.email }}</td>
-        <td>
-          <a class="btn btn-sm btn-info"
-             [routerLink]="['/clientes', c.id]">
-            Detalhes
+        <td class="d-flex gap-2">
+
+          <a class="btn btn-sm btn-info" title="Detalhes" [routerLink]="['/clientes', c.id]">
+            <i class="bi bi-eye"></i>
           </a>
+
+          <a class="btn btn-sm btn-warning" title="Editar" [routerLink]="['/clientes', c.id, 'editar']">
+            <i class="bi bi-pencil"></i>
+          </a>
+
+          <button class="btn btn-sm btn-danger" title="Excluir" (click)="excluir(c)" [disabled]="deletingId === c.id">
+            <i *ngIf="deletingId !== c.id" class="bi bi-trash"></i>
+            <span *ngIf="deletingId === c.id" class="spinner-border spinner-border-sm"></span>
+          </button>
+
         </td>
       </tr>
     </tbody>

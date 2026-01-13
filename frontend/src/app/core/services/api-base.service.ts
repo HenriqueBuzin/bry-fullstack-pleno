@@ -9,6 +9,8 @@ export class ApiBaseService {
 
   private readonly baseUrl = 'http://localhost:8080/api';
 
+  private readonly publicUrl = 'http://localhost:8080';
+
   constructor(private http: HttpClient) {}
 
   get<T>(endpoint: string, params?: HttpParams): Observable<T> {
@@ -26,4 +28,9 @@ export class ApiBaseService {
   delete<T>(endpoint: string): Observable<T> {
     return this.http.delete<T>(`${this.baseUrl}/${endpoint}`);
   }
+
+  getFileUrl(path: string): string {
+    return `${this.publicUrl}/${path}`;
+  }
+
 }

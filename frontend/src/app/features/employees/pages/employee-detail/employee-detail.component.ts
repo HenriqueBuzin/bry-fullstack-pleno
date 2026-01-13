@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
-import { Employee, EmployeeService } from '../../services/employee.service';
+import { EmployeeService } from '../../services/employee.service';
+import { Employee } from '../../../../shared/models/employee.model';
 import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 
 @Component({
@@ -14,12 +15,14 @@ export class EmployeeDetailComponent implements OnInit {
 
   employee?: Employee;
   loading = false;
+  deleting = false;
 
   constructor(
     private route: ActivatedRoute,
-    private employeeService: EmployeeService,
-    private location: Location
-  ) {}
+    public employeeService: EmployeeService,
+    private location: Location,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -44,5 +47,28 @@ export class EmployeeDetailComponent implements OnInit {
 
   formatarCpf(cpf: string): string {
     return DocumentMaskUtil.formatCpf(cpf);
+  }
+
+  excluir(): void {
+    if (!this.employee) return;
+
+    const confirmar = confirm(
+      `Tem certeza que deseja remover o funcionário "${this.employee.name}"?`
+    );
+
+    if (!confirmar) return;
+
+    this.deleting = true;
+
+    this.employeeService.delete(this.employee.id).subscribe({
+      next: () => {
+        alert('Funcionário removido com sucesso.');
+        this.router.navigate(['/funcionarios']);
+      },
+      error: () => {
+        this.deleting = false;
+        alert('Erro ao remover funcionário. Tente novamente.');
+      }
+    });
   }
 }

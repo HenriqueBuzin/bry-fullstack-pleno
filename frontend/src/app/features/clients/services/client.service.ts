@@ -1,19 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiBaseService } from '../../../core/services/api-base.service';
-
-export interface Client {
-  id: number;
-  login: string;
-  name: string;
-  cpf: string;
-  email: string;
-  address: string;
-  companies?: {
-    id: number;
-    name: string;
-  }[];
-}
+import { Client } from '../../../shared/models/client.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,10 +25,14 @@ export class ClientService {
   }
 
   update(id: number, data: FormData): Observable<Client> {
-    return this.api.put<Client>(`${this.endpoint}/${id}`, data);
+    return this.api.post<Client>(`${this.endpoint}/${id}`, data);
   }
 
   delete(id: number): Observable<void> {
     return this.api.delete<void>(`${this.endpoint}/${id}`);
+  }
+
+  getDocumentoUrl(path: string): string {
+    return this.api.getFileUrl(`storage/${path}`);
   }
 }

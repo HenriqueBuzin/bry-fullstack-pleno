@@ -6,22 +6,54 @@
 
   <div *ngIf="employee && !loading">
 
-    <div class="d-flex align-items-center mb-3">
-      <button class="btn btn-secondary me-3" (click)="voltar()">← Voltar</button>
+    <div class="d-flex align-items-center mb-3 justify-content-between">
+
+      <button class="btn btn-secondary" title="Voltar" (click)="voltar()">
+        ← Voltar
+      </button>
+
       <h2 class="mb-0">{{ employee.name }}</h2>
+
+      <div class="d-flex gap-2">
+        <a class="btn btn-warning" title="Editar" [routerLink]="['/funcionarios', employee.id, 'editar']">
+          <i class="bi bi-pencil"></i>
+        </a>
+
+        <button class="btn btn-danger" title="Excluir" (click)="excluir()" [disabled]="deleting">
+          <i *ngIf="!deleting" class="bi bi-trash"></i>
+          <span *ngIf="deleting" class="spinner-border spinner-border-sm"></span>
+        </button>
+      </div>
+
     </div>
 
-    <p><strong>Login:</strong> {{ employee.login }}</p>
-    <p><strong>CPF:</strong> {{ formatarCpf(employee.cpf) }}</p>
-    <p><strong>E-mail:</strong> {{ employee.email }}</p>
-    <p><strong>Endereço:</strong> {{ employee.address }}</p>
+    <div class="row">
 
-    <div *ngIf="employee.document_path">
-      <p class="mb-1"><strong>Documento:</strong></p>
-      <a class="btn btn-sm btn-outline-primary" [href]="'http://localhost:8080/storage/' + employee.document_path"
-        target="_blank">
-        Ver documento
-      </a>
+      <div class="col-md-6 mb-3">
+        <strong>Login:</strong>
+        <div>{{ employee.login }}</div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <strong>Nome:</strong>
+        <div>{{ employee.name }}</div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <strong>CPF:</strong>
+        <div>{{ formatarCpf(employee.cpf) }}</div>
+      </div>
+
+      <div class="col-md-6 mb-3">
+        <strong>E-mail:</strong>
+        <div>{{ employee.email }}</div>
+      </div>
+
+      <div class="col-md-12 mb-3">
+        <strong>Endereço:</strong>
+        <div>{{ employee.address }}</div>
+      </div>
+
     </div>
 
     <hr>
@@ -31,13 +63,29 @@
     <ul *ngIf="employee.companies?.length; else semEmpresas">
       <li *ngFor="let c of employee.companies">
         <a [routerLink]="['/empresas', c.id]" class="text-decoration-none">
-          {{ c.name }} →
+          {{ c.name }}
         </a>
       </li>
     </ul>
 
     <ng-template #semEmpresas>
-      <p>Nenhuma empresa vinculada.</p>
+      <p class="text-muted">Nenhuma empresa vinculada.</p>
+    </ng-template>
+
+    <hr>
+
+    <h4>Documento</h4>
+
+    <div *ngIf="employee.document_path; else semDocumento">
+      <a class="btn btn-outline-primary" [href]="employeeService.getDocumentoUrl(employee.document_path)"
+        target="_blank" download>
+        <i class="bi bi-download"></i>
+        Baixar documento
+      </a>
+    </div>
+
+    <ng-template #semDocumento>
+      <p class="text-muted">Nenhum documento enviado.</p>
     </ng-template>
 
   </div>

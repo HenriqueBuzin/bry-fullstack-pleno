@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Company, CompanyService } from '../../services/company.service';
+import { CompanyService } from '../../services/company.service';
+import { Company } from '../../../../shared/models/company.model';
 import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 
 @Component({
@@ -14,6 +15,7 @@ export class CompanyListComponent implements OnInit {
 
   companies: Company[] = [];
   loading = false;
+  deletingId?: number;
 
   constructor(private companyService: CompanyService) {}
 
@@ -29,6 +31,28 @@ export class CompanyListComponent implements OnInit {
         this.loading = false;
       },
       error: () => this.loading = false
+    });
+  }
+
+  excluir(company: Company): void {
+    const confirmar = confirm(
+      `Tem certeza que deseja remover a empresa "${company.name}"?`
+    );
+
+    if (!confirmar) return;
+
+    this.deletingId = company.id;
+
+    this.companyService.delete(company.id).subscribe({
+      next: () => {
+        alert('Empresa removida com sucesso.');
+        this.deletingId = undefined;
+        this.loadCompanies();
+      },
+      error: () => {
+        alert('Erro ao remover empresa. Tente novamente.');
+        this.deletingId = undefined;
+      }
     });
   }
 

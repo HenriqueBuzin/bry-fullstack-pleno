@@ -1,37 +1,95 @@
-<div class="container mt-4" *ngIf="company">
+<div class="container mt-4" *ngIf="company && !loading">
 
-  <div class="d-flex align-items-center mb-3">
-    <button class="btn btn-secondary me-3" (click)="voltar()">← Voltar</button>
+  <div class="d-flex align-items-center mb-3 justify-content-between">
+
+    <button class="btn btn-secondary" title="Voltar" (click)="voltar()">
+      ← Voltar
+    </button>
+
     <h2 class="mb-0">{{ company.name }}</h2>
+
+    <div class="d-flex gap-2">
+      <a
+        class="btn btn-warning"
+        title="Editar"
+        [routerLink]="['/empresas', company.id, 'editar']"
+      >
+        <i class="bi bi-pencil"></i>
+      </a>
+
+      <button
+        class="btn btn-danger"
+        title="Excluir"
+        (click)="excluir()"
+        [disabled]="deleting"
+      >
+        <i *ngIf="!deleting" class="bi bi-trash"></i>
+        <span *ngIf="deleting" class="spinner-border spinner-border-sm"></span>
+      </button>
+    </div>
+
   </div>
 
-  <p><strong>CNPJ:</strong> {{ formatCnpj(company.cnpj) }}</p>
-  <p><strong>Endereço:</strong> {{ company.address }}</p>
+  <div class="row">
+
+    <div class="col-md-6 mb-3">
+      <strong>CNPJ:</strong>
+      <div>{{ formatCnpj(company.cnpj) }}</div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <strong>Endereço:</strong>
+      <div>{{ company.address }}</div>
+    </div>
+
+  </div>
 
   <hr>
 
-  <h4>Funcionários</h4>
-  <ul *ngIf="company.employees?.length; else semFuncionarios">
-    <li *ngFor="let f of company.employees">
-      {{ f.name }}
-    </li>
-  </ul>
+  <div class="row">
 
-  <ng-template #semFuncionarios>
-    <p>Nenhum funcionário vinculado.</p>
-  </ng-template>
+    <div class="col-md-6">
+      <h4>Funcionários</h4>
 
-  <h4>Clientes</h4>
-  <ul *ngIf="company.clients?.length; else semClientes">
-    <li *ngFor="let c of company.clients">
-      <a [routerLink]="['/clientes', c.id]" class="text-decoration-none">
-        {{ c.name }} →
-      </a>
-    </li>
-  </ul>
+      <ul *ngIf="company.employees?.length; else semFuncionarios">
+        <li *ngFor="let f of company.employees">
+          <a
+            [routerLink]="['/funcionarios', f.id]"
+            class="text-decoration-none"
+          >
+            {{ f.name }}
+          </a>
+        </li>
+      </ul>
 
-  <ng-template #semClientes>
-    <p>Nenhum cliente vinculado.</p>
-  </ng-template>
+      <ng-template #semFuncionarios>
+        <p class="text-muted">Nenhum funcionário vinculado.</p>
+      </ng-template>
+    </div>
 
+    <div class="col-md-6">
+      <h4>Clientes</h4>
+
+      <ul *ngIf="company.clients?.length; else semClientes">
+        <li *ngFor="let c of company.clients">
+          <a
+            [routerLink]="['/clientes', c.id]"
+            class="text-decoration-none"
+          >
+            {{ c.name }}
+          </a>
+        </li>
+      </ul>
+
+      <ng-template #semClientes>
+        <p class="text-muted">Nenhum cliente vinculado.</p>
+      </ng-template>
+    </div>
+
+  </div>
+
+</div>
+
+<div *ngIf="loading" class="alert alert-info">
+  Carregando...
 </div>

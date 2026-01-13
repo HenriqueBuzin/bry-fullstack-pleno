@@ -40,8 +40,8 @@ class ClientController extends Controller
             ]);
         }
 
-        if (!empty($data['company_ids'])) {
-            $client->companies()->sync($data['company_ids']);
+        if (array_key_exists('company_ids', $data)) {
+            $client->companies()->sync($data['company_ids'] ?? []);
         }
 
         return response()->json(

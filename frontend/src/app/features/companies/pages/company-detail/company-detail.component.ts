@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
-import { Company, CompanyService } from '../../services/company.service';
+import { CompanyService } from '../../services/company.service';
+import { Company } from '../../../../shared/models/company.model';
 import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 
 @Component({
@@ -14,15 +15,18 @@ export class CompanyDetailComponent implements OnInit {
 
   company?: Company;
   loading = false;
+  deleting = false;
 
   constructor(
     private route: ActivatedRoute,
     private companyService: CompanyService,
-    private location: Location
+    private location: Location,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
+    if (!id) return;
     this.loadCompany(id);
   }
 
@@ -43,5 +47,28 @@ export class CompanyDetailComponent implements OnInit {
 
   formatCnpj(value: string): string {
     return DocumentMaskUtil.formatCnpj(value);
+  }
+
+  excluir(): void {
+    if (!this.company) return;
+
+    const confirmar = confirm(
+      `Tem certeza que deseja remover a empresa "${this.company.name}"?`
+    );
+
+    if (!confirmar) return;
+
+    this.deleting = true;
+
+    this.companyService.delete(this.company.id).subscribe({
+      next: () => {
+        alert('Empresa removida com sucesso.');
+        this.router.navigate(['/empresas']);
+      },
+      error: () => {
+        this.deleting = false;
+        alert('Erro ao remover empresa. Tente novamente.');
+      }
+    });
   }
 }

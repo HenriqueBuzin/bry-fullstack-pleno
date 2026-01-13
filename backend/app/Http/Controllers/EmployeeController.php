@@ -42,8 +42,8 @@ class EmployeeController extends Controller
         }
 
         // vínculo com empresas
-        if (!empty($data['company_ids'])) {
-            $employee->companies()->sync($data['company_ids']);
+        if (array_key_exists('company_ids', $data)) {
+            $employee->companies()->sync($data['company_ids'] ?? []);
         }
 
         return response()->json(

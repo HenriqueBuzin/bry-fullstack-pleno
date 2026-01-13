@@ -15,6 +15,12 @@ export const routes: Routes = [
         .then(m => m.CompanyFormComponent)
   },
   {
+    path: 'empresas/:id/editar',
+    loadComponent: () =>
+      import('./features/companies/pages/company-form/company-form.component')
+        .then(m => m.CompanyFormComponent)
+  },
+  {
     path: 'empresas/:id',
     loadComponent: () =>
       import('./features/companies/pages/company-detail/company-detail.component')
@@ -34,6 +40,12 @@ export const routes: Routes = [
         .then(m => m.EmployeeFormComponent)
   },
   {
+    path: 'funcionarios/:id/editar',
+    loadComponent: () =>
+      import('./features/employees/pages/employee-form/employee-form.component')
+        .then(m => m.EmployeeFormComponent)
+  },
+  {
     path: 'funcionarios/:id',
     loadComponent: () =>
       import('./features/employees/pages/employee-detail/employee-detail.component')
@@ -48,6 +60,12 @@ export const routes: Routes = [
   },
   {
     path: 'clientes/novo',
+    loadComponent: () =>
+      import('./features/clients/pages/client-form/client-form.component')
+        .then(m => m.ClientFormComponent)
+  },
+  {
+    path: 'clientes/:id/editar',
     loadComponent: () =>
       import('./features/clients/pages/client-form/client-form.component')
         .then(m => m.ClientFormComponent)

@@ -1,40 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiBaseService } from '../../../core/services/api-base.service';
-
-/**
- * Tipos mínimos para relacionamento
- */
-export interface EmployeeSummary {
-  id: number;
-  name: string;
-}
-
-export interface ClientSummary {
-  id: number;
-  name: string;
-}
-
-/**
- * Entidade Company (GET)
- */
-export interface Company {
-  id: number;
-  name: string;
-  cnpj: string;
-  address: string;
-  employees: EmployeeSummary[];
-  clients: ClientSummary[];
-}
-
-/**
- * Payload Company (POST / PUT)
- */
-export interface CompanyPayload {
-  name: string;
-  cnpj: string;
-  address: string;
-}
+import { Company, CompanyPayload } from '../../../shared/models/company.model';
 
 @Injectable({
   providedIn: 'root'

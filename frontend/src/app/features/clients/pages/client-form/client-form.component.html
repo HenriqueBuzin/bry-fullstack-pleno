@@ -1,9 +1,19 @@
 <div class="container mt-4">
 
-  <div class="d-flex align-items-center mb-3">
-    <button class="btn btn-secondary me-3" (click)="voltar()">← Voltar</button>
-    <h2>{{ clientId ? 'Editar Cliente' : 'Novo Cliente' }}</h2>
+  <div class="d-flex align-items-center mb-3 justify-content-between">
+
+    <button class="btn btn-secondary" title="Voltar" (click)="voltar()">
+      ← Voltar
+    </button>
+
+    <h2 class="mb-0">
+      {{ clientId ? 'Editar Cliente' : 'Novo Cliente' }}
+    </h2>
+
+    <div></div>
+
   </div>
+
 
   <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
     {{ successMessage }}
@@ -22,6 +32,10 @@
       <li *ngFor="let msg of errorMessages">{{ msg }}</li>
     </ul>
     <button class="btn-close" (click)="errorMessages = []"></button>
+  </div>
+
+  <div class="mb-3">
+    <small>Os campos com * ao lado do nome são obrigatórios</small>
   </div>
 
   <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
@@ -67,12 +81,18 @@
       </div>
     </div>
 
-    <div class="mb-3" *ngIf="!clientId">
-      <label class="form-label">Senha *</label>
+    <div class="mb-3">
+      <label class="form-label">
+        Senha {{ clientId ? '(opcional)' : '*' }}
+      </label>
+
       <input type="password" class="form-control" formControlName="password"
         [class.is-invalid]="campoInvalido('password')">
-      <div class="invalid-feedback">
-        Mínimo de 6 caracteres.
+
+      <div class="invalid-feedback" *ngIf="campoInvalido('password')">
+        <div *ngIf="form.get('password')?.errors?.['minlength']">
+          A senha deve ter no mínimo 6 caracteres.
+        </div>
       </div>
     </div>
 
@@ -95,7 +115,10 @@
     </div>
 
     <button class="btn btn-primary" type="submit" [disabled]="loading">
-      {{ loading ? 'Salvando...' : 'Salvar' }}
+      {{ loading
+      ? 'Salvando...'
+      : (clientId ? 'Salvar Alterações' : 'Cadastrar')
+      }}
     </button>
 
   </form>

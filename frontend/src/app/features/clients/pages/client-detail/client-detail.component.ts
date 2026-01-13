@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
-import { Client, ClientService } from '../../services/client.service';
+import { ClientService } from '../../services/client.service';
+import { Client } from '../../../../shared/models/client.model';
 import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 
 @Component({
@@ -14,11 +15,13 @@ export class ClientDetailComponent implements OnInit {
 
   client?: Client;
   loading = false;
+  deleting = false;
 
   constructor(
     private route: ActivatedRoute,
-    private clientService: ClientService,
-    private location: Location
+    public clientService: ClientService,
+    private location: Location,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -44,5 +47,28 @@ export class ClientDetailComponent implements OnInit {
 
   formatarCpf(cpf: string): string {
     return DocumentMaskUtil.formatCpf(cpf);
+  }
+
+  excluir(): void {
+    if (!this.client) return;
+
+    const confirmar = confirm(
+      `Tem certeza que deseja remover o cliente "${this.client.name}"?`
+    );
+
+    if (!confirmar) return;
+
+    this.deleting = true;
+
+    this.clientService.delete(this.client.id).subscribe({
+      next: () => {
+        alert('Cliente removido com sucesso.');
+        this.router.navigate(['/clientes']);
+      },
+      error: () => {
+        this.deleting = false;
+        alert('Erro ao remover cliente. Tente novamente.');
+      }
+    });
   }
 }

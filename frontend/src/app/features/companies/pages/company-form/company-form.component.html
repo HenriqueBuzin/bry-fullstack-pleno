@@ -1,8 +1,17 @@
 <div class="container mt-4">
 
-  <div class="d-flex align-items-center mb-3">
-    <button class="btn btn-secondary me-3" (click)="voltar()">← Voltar</button>
-    <h2>{{ companyId ? 'Editar Empresa' : 'Nova Empresa' }}</h2>
+  <div class="d-flex align-items-center mb-3 justify-content-between">
+
+    <button class="btn btn-secondary" title="Voltar" (click)="voltar()">
+      ← Voltar
+    </button>
+
+    <h2 class="mb-0">
+      {{ companyId ? 'Editar Empresa' : 'Nova Empresa' }}
+    </h2>
+
+    <div></div>
+
   </div>
 
   <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
@@ -22,6 +31,10 @@
       <li *ngFor="let msg of errorMessages">{{ msg }}</li>
     </ul>
     <button class="btn-close" (click)="errorMessages = []"></button>
+  </div>
+
+  <div class="mb-3">
+    <small>Os campos com * ao lado do nome são obrigatórios</small>
   </div>
 
   <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
@@ -60,7 +73,10 @@
     </div>
 
     <button class="btn btn-primary" type="submit" [disabled]="loading">
-      {{ loading ? 'Salvando...' : 'Salvar' }}
+      {{ loading
+      ? 'Salvando...'
+      : (companyId ? 'Salvar Alterações' : 'Cadastrar')
+      }}
     </button>
 
   </form>
