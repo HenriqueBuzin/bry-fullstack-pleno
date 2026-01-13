@@ -1,30 +1,33 @@
 #!/bin/sh
 
+set -e
+
 echo "🚀 Inicializando container PHP (DEV)"
 
-# Garantir pastas básicas
+cd /var/www/html
+
+# 📁 Garantir pastas básicas
 mkdir -p storage/logs bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache || true
 chmod -R 775 storage bootstrap/cache || true
 
+# 📦 Dependências
 echo "📦 Instalando dependências (composer)"
 composer install --no-interaction
 
-# Aguarda banco
+# ⏳ Aguarda banco
 echo "⏳ Aguardando banco de dados..."
 sleep 5
 
-# Garante APP_KEY
-if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "" ]; then
+# 🔑 Garante APP_KEY
+if [ -z "$APP_KEY" ]; then
   echo "🔑 Gerando APP_KEY"
   php artisan key:generate
+else
+  echo "✅ APP_KEY já definido"
 fi
 
-# Storage link
-echo "🔗 Criando storage link"
-php artisan storage:link || true
-
-# Migrations
+# 🗄️ Migrations
 echo "🗄️ Rodando migrations"
 php artisan migrate --force
 

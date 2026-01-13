@@ -27,5 +27,7 @@ RUN composer install \
 RUN chown -R www-data:www-data storage bootstrap/cache
 RUN chown -R www-data:www-data /var/www/html
 
-ENTRYPOINT ["/entrypoint-prod.sh"]
+RUN chmod +x /var/www/html/entrypoint-prod.sh
+
+ENTRYPOINT ["/var/www/html/entrypoint-prod.sh"]
 CMD ["php-fpm"]

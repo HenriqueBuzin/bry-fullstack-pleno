@@ -1,4 +1,4 @@
-# Projeto Bry Fullstack – Avaliação
+# Projeto BRy Fullstack – Avaliação
 
 ## 📌 Contexto
 
@@ -8,7 +8,6 @@ Para isso, **algumas etapas que normalmente seriam manuais em um projeto real** 
 
 * `.env` já incluído no repositório
 * `php artisan migrate` executado automaticamente
-* `php artisan storage:link` executado automaticamente
 
 ⚠️ **Importante:**
 Essas decisões **não representam boas práticas para produção real**, mas foram adotadas **intencionalmente** para reduzir fricção durante a avaliação.

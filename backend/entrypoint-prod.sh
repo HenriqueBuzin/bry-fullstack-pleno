@@ -1,16 +1,17 @@
 #!/bin/sh
 
+set -e
+
 echo "🚀 Inicializando container PHP (PROD)"
 
-# Storage link
-echo "🔗 Garantindo storage link"
-php artisan storage:link || true
+# Garante que estamos no diretório certo
+cd /var/www/html
 
-# Aguarda banco
+# ⏳ Aguarda banco
 echo "⏳ Aguardando banco de dados..."
 sleep 5
 
-# ⚠️ MIGRATE 
+# 🗄️ Migrations (controladas por flag)
 if [ "$RUN_MIGRATIONS" = "true" ]; then
   echo "🗄️ Rodando migrations (PROD)"
   php artisan migrate --force
