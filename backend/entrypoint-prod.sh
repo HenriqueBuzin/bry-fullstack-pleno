@@ -9,7 +9,7 @@ cd /var/www/html
 
 # ⏳ Aguarda banco
 echo "⏳ Aguardando banco de dados..."
-sleep 5
+sleep 10
 
 # 🗄️ Migrations (controladas por flag)
 echo "🗄️ Rodando migrations (PROD)"
