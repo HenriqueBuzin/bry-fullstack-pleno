@@ -27,10 +27,7 @@
         <td>{{ formatarCpf(e.cpf) }}</td>
         <td>{{ e.email }}</td>
         <td>
-          <a
-            class="btn btn-sm btn-info"
-            [routerLink]="['/funcionarios', e.id]"
-          >
+          <a class="btn btn-sm btn-info" [routerLink]="['/funcionarios', e.id]">
             Detalhes
           </a>
         </td>

@@ -1,26 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  Validators
+} from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
 import {
   EmployeeService,
   EmployeePayload
 } from '../../services/employee.service';
 
+import {
+  Company,
+  CompanyService
+} from '../../../companies/services/company.service';
+
 import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
-
-/**
- * Validador: impede acentuação
- * (exigência do enunciado)
- */
-function noAccentValidator(control: AbstractControl): ValidationErrors | null {
-  const value = control.value;
-  if (!value) return null;
-
-  const regex = /^[A-Za-z0-9._\- ]+$/;
-  return regex.test(value) ? null : { accent: true };
-}
+import { DocumentValidationsUtil } from '../../../../shared/utils/document-validations.utils';
 
 @Component({
   selector: 'app-employee-form',
@@ -31,35 +29,65 @@ function noAccentValidator(control: AbstractControl): ValidationErrors | null {
 export class EmployeeFormComponent implements OnInit {
 
   form = this.fb.group({
-    login: ['', [Validators.required, noAccentValidator]],
-    name: ['', [Validators.required, noAccentValidator]],
-    cpf: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]],
+    login: ['', [Validators.required, DocumentValidationsUtil.noAccent]],
+    name: ['', [Validators.required, DocumentValidationsUtil.noAccent]],
+    cpf: ['', [Validators.required, DocumentValidationsUtil.cpf]],
+    email: ['', [Validators.required, DocumentValidationsUtil.email]],
     address: ['', Validators.required],
     password: ['', Validators.required],
-    document: [null]
+    company_ids: [[] as number[]]
   });
 
+  companies: Company[] = [];
   employeeId?: number;
+  selectedFile?: File;
+
   loading = false;
   submitted = false;
 
-  selectedFile?: File;
+  successMessage?: string;
+  warningMessages: string[] = [];
+  errorMessages: string[] = [];
 
   constructor(
     private fb: FormBuilder,
     private employeeService: EmployeeService,
+    private companyService: CompanyService,
     private route: ActivatedRoute,
-    private router: Router,
     private location: Location
   ) {}
 
   ngOnInit(): void {
+    this.loadCompanies();
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.employeeId = Number(id);
       this.loadEmployee(this.employeeId);
+
+      this.form.get('password')?.clearValidators();
+      this.form.get('password')?.updateValueAndValidity();
     }
+  }
+
+  get companyIds(): number[] {
+    return this.form.controls.company_ids.value ?? [];
+  }
+
+  loadCompanies(): void {
+    this.companyService.list().subscribe({
+      next: data => this.companies = data
+    });
+  }
+
+  onCompanyToggle(companyId: number): void {
+    const selected = this.companyIds;
+
+    this.form.controls.company_ids.setValue(
+      selected.includes(companyId)
+        ? selected.filter(id => id !== companyId)
+        : [...selected, companyId]
+    );
   }
 
   loadEmployee(id: number): void {
@@ -69,19 +97,18 @@ export class EmployeeFormComponent implements OnInit {
         name: employee.name,
         cpf: DocumentMaskUtil.formatCpf(employee.cpf),
         email: employee.email,
-        address: employee.address
+        address: employee.address,
+        company_ids: employee.companies?.map(c => c.id) ?? []
       });
-
-      // senha não volta do backend
-      this.form.get('password')?.clearValidators();
-      this.form.get('password')?.updateValueAndValidity();
     });
   }
 
   onCpfInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const formatted = DocumentMaskUtil.formatCpf(input.value);
-    this.form.get('cpf')?.setValue(formatted, { emitEvent: false });
+    this.form.controls.cpf.setValue(
+      DocumentMaskUtil.formatCpf(input.value),
+      { emitEvent: false }
+    );
   }
 
   onFileChange(event: Event): void {
@@ -93,6 +120,9 @@ export class EmployeeFormComponent implements OnInit {
 
   salvar(): void {
     this.submitted = true;
+    this.successMessage = undefined;
+    this.warningMessages = [];
+    this.errorMessages = [];
 
     if (this.form.invalid) return;
 
@@ -104,13 +134,16 @@ export class EmployeeFormComponent implements OnInit {
       cpf: DocumentMaskUtil.clear(this.form.value.cpf!),
       email: this.form.value.email!,
       address: this.form.value.address!,
-      password: this.form.value.password || undefined
+      password: this.form.value.password || undefined,
+      company_ids: this.companyIds
     };
 
     const formData = new FormData();
 
     Object.entries(payload).forEach(([key, value]) => {
-      if (value) {
+      if (Array.isArray(value)) {
+        value.forEach(v => formData.append(`${key}[]`, String(v)));
+      } else if (value) {
         formData.append(key, value);
       }
     });
@@ -120,18 +153,48 @@ export class EmployeeFormComponent implements OnInit {
     }
 
     const request = this.employeeId
-      ? this.employeeService.update(this.employeeId, formData as any)
-      : this.employeeService.create(formData as any);
+      ? this.employeeService.update(this.employeeId, formData)
+      : this.employeeService.create(formData);
 
     request.subscribe({
       next: () => {
         this.loading = false;
-        this.router.navigate(['/employees']);
+        this.successMessage = this.employeeId
+          ? 'Funcionário atualizado com sucesso!'
+          : 'Funcionário cadastrado com sucesso!';
       },
-      error: () => {
+      error: err => {
         this.loading = false;
+
+        const result = this.extractMessages(err);
+        this.warningMessages = result.warnings;
+        this.errorMessages = result.errors;
       }
     });
+  }
+
+  private extractMessages(err: any): {
+    warnings: string[];
+    errors: string[];
+  } {
+    if (err?.status === 422 && err?.error?.errors) {
+      return {
+        warnings: Object.values(err.error.errors).flat() as string[],
+        errors: []
+      };
+    }
+
+    if (err?.error?.message) {
+      return {
+        warnings: [],
+        errors: [err.error.message]
+      };
+    }
+
+    return {
+      warnings: [],
+      errors: ['Erro inesperado ao salvar funcionário.']
+    };
   }
 
   voltar(): void {
@@ -139,12 +202,7 @@ export class EmployeeFormComponent implements OnInit {
   }
 
   campoInvalido(campo: string): boolean {
-    const control = this.form.get(campo);
-    return !!(control && control.invalid && (control.touched || this.submitted));
-  }
-
-  campoValido(campo: string): boolean {
-    const control = this.form.get(campo);
-    return !!(control && control.valid && (control.touched || this.submitted));
+    const c = this.form.get(campo);
+    return !!(c && c.invalid && (c.touched || this.submitted));
   }
 }

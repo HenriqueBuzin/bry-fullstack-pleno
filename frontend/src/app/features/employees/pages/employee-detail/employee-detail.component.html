@@ -18,11 +18,8 @@
 
     <div *ngIf="employee.document_path">
       <p class="mb-1"><strong>Documento:</strong></p>
-      <a
-        class="btn btn-sm btn-outline-primary"
-        [href]="'http://localhost:8080/storage/' + employee.document_path"
-        target="_blank"
-      >
+      <a class="btn btn-sm btn-outline-primary" [href]="'http://localhost:8080/storage/' + employee.document_path"
+        target="_blank">
         Ver documento
       </a>
     </div>
@@ -33,7 +30,9 @@
 
     <ul *ngIf="employee.companies?.length; else semEmpresas">
       <li *ngFor="let c of employee.companies">
-        {{ c.name }}
+        <a [routerLink]="['/empresas', c.id]" class="text-decoration-none">
+          {{ c.name }} →
+        </a>
       </li>
     </ul>
 

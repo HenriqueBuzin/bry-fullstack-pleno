@@ -24,7 +24,9 @@
   <h4>Clientes</h4>
   <ul *ngIf="company.clients?.length; else semClientes">
     <li *ngFor="let c of company.clients">
-      {{ c.name }}
+      <a [routerLink]="['/clientes', c.id]" class="text-decoration-none">
+        {{ c.name }} →
+      </a>
     </li>
   </ul>
 

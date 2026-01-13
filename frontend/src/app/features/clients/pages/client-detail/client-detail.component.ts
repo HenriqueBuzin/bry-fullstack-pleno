@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
 import { Client, ClientService } from '../../services/client.service';
 import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
@@ -7,7 +7,7 @@ import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 @Component({
   selector: 'app-client-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './client-detail.component.html'
 })
 export class ClientDetailComponent implements OnInit {

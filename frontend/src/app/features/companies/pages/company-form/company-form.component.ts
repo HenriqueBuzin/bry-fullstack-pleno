@@ -18,7 +18,6 @@ import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 })
 export class CompanyFormComponent implements OnInit {
 
-  // ✅ somente required (conforme enunciado)
   form = this.fb.group({
     name: ['', Validators.required],
     cnpj: ['', Validators.required],
@@ -29,8 +28,9 @@ export class CompanyFormComponent implements OnInit {
   loading = false;
   submitted = false;
 
-  successMessage: string | null = null;
-  errorMessage: string | null = null;
+  successMessage?: string;
+  warningMessages: string[] = [];
+  errorMessages: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -71,8 +71,9 @@ export class CompanyFormComponent implements OnInit {
 
   salvar(): void {
     this.submitted = true;
-    this.successMessage = null;
-    this.errorMessage = null;
+    this.successMessage = undefined;
+    this.warningMessages = [];
+    this.errorMessages = [];
 
     if (this.form.invalid) return;
 
@@ -99,11 +100,37 @@ export class CompanyFormComponent implements OnInit {
         this.successMessage = 'Empresa salva com sucesso!';
         this.router.navigate(['/empresas']);
       },
-      error: () => {
+      error: err => {
         this.loading = false;
-        this.errorMessage = 'Erro ao salvar empresa. Tente novamente.';
+        const result = this.extractMessages(err);
+        this.warningMessages = result.warnings;
+        this.errorMessages = result.errors;
       }
     });
+  }
+
+  private extractMessages(err: any): {
+    warnings: string[];
+    errors: string[];
+  } {
+    if (err?.status === 422 && err?.error?.errors) {
+      return {
+        warnings: Object.values(err.error.errors).flat() as string[],
+        errors: []
+      };
+    }
+
+    if (err?.error?.message) {
+      return {
+        warnings: [],
+        errors: [err.error.message]
+      };
+    }
+
+    return {
+      warnings: [],
+      errors: ['Erro ao salvar empresa. Tente novamente.']
+    };
   }
 
   voltar(): void {

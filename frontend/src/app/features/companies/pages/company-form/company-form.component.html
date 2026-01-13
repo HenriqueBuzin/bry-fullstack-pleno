@@ -2,65 +2,60 @@
 
   <div class="d-flex align-items-center mb-3">
     <button class="btn btn-secondary me-3" (click)="voltar()">← Voltar</button>
-    <h2 class="mb-0">
-      {{ companyId ? 'Editar Empresa' : 'Nova Empresa' }}
-    </h2>
+    <h2>{{ companyId ? 'Editar Empresa' : 'Nova Empresa' }}</h2>
   </div>
 
-  <div *ngIf="successMessage" class="alert alert-success">
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show">
     {{ successMessage }}
+    <button class="btn-close" (click)="successMessage = undefined"></button>
   </div>
 
-  <div *ngIf="errorMessage" class="alert alert-danger">
-    {{ errorMessage }}
+  <div *ngIf="warningMessages.length" class="alert alert-warning alert-dismissible fade show">
+    <ul class="mb-0">
+      <li *ngFor="let msg of warningMessages">{{ msg }}</li>
+    </ul>
+    <button class="btn-close" (click)="warningMessages = []"></button>
+  </div>
+
+  <div *ngIf="errorMessages.length" class="alert alert-danger alert-dismissible fade show">
+    <ul class="mb-0">
+      <li *ngFor="let msg of errorMessages">{{ msg }}</li>
+    </ul>
+    <button class="btn-close" (click)="errorMessages = []"></button>
   </div>
 
   <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
 
     <div class="mb-3">
       <label class="form-label">Nome *</label>
-      <input
-        class="form-control"
-        formControlName="name"
-        [class.is-invalid]="campoInvalido('name')"
-        [class.is-valid]="campoValido('name')"
-      >
+      <input class="form-control" formControlName="name" [class.is-invalid]="campoInvalido('name')"
+        [class.is-valid]="campoValido('name')">
       <div class="invalid-feedback">
-        Nome é obrigatório
+        Nome é obrigatório.
       </div>
     </div>
 
     <div class="mb-3">
       <label class="form-label">CNPJ *</label>
-      <input
-        class="form-control"
-        formControlName="cnpj"
-        maxlength="18"
-        placeholder="00.000.000/0000-00"
-        (input)="onCnpjInput($event)"
-        [class.is-invalid]="campoInvalido('cnpj')"
-        [class.is-valid]="campoValido('cnpj')"
-      >
+      <input class="form-control" formControlName="cnpj" maxlength="18" placeholder="00.000.000/0000-00"
+        (input)="onCnpjInput($event)" [class.is-invalid]="campoInvalido('cnpj')" [class.is-valid]="campoValido('cnpj')">
+
       <div class="invalid-feedback">
         <div *ngIf="form.controls.cnpj.errors?.['required']">
-          CNPJ é obrigatório
+          CNPJ é obrigatório.
         </div>
         <div *ngIf="form.controls.cnpj.errors?.['invalidCnpj']">
-          CNPJ inválido
+          CNPJ inválido.
         </div>
       </div>
     </div>
 
     <div class="mb-3">
       <label class="form-label">Endereço *</label>
-      <input
-        class="form-control"
-        formControlName="address"
-        [class.is-invalid]="campoInvalido('address')"
-        [class.is-valid]="campoValido('address')"
-      >
+      <input class="form-control" formControlName="address" [class.is-invalid]="campoInvalido('address')"
+        [class.is-valid]="campoValido('address')">
       <div class="invalid-feedback">
-        Endereço é obrigatório
+        Endereço é obrigatório.
       </div>
     </div>
 

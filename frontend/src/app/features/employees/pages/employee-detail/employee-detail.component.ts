@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
 import { Employee, EmployeeService } from '../../services/employee.service';
 import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
@@ -7,7 +7,7 @@ import { DocumentMaskUtil } from '../../../../shared/utils/document-mask.util';
 @Component({
   selector: 'app-employee-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './employee-detail.component.html'
 })
 export class EmployeeDetailComponent implements OnInit {

@@ -22,11 +22,10 @@ import { DocumentValidationsUtil } from '../../../../shared/utils/document-valid
 })
 export class ClientFormComponent implements OnInit {
 
-  // ✅ alertas bootstrap
-  successMessage = '';
-  errorMessage = '';
+  successMessage?: string;
+  warningMessages: string[] = [];
+  errorMessages: string[] = [];
 
-  // ✅ upload
   documentControl = new FormControl<File | null>(null);
 
   form = this.fb.group({
@@ -60,13 +59,10 @@ export class ClientFormComponent implements OnInit {
       this.clientId = Number(id);
       this.loadClient(this.clientId);
 
-      // ✅ senha só no CREATE
       this.form.controls.password.clearValidators();
       this.form.controls.password.updateValueAndValidity();
     }
   }
-
-  /* ===== Empresas ===== */
 
   loadCompanies(): void {
     this.companyService.list().subscribe({
@@ -83,8 +79,6 @@ export class ClientFormComponent implements OnInit {
         : [...selected, companyId]
     );
   }
-
-  /* ===== Cliente ===== */
 
   loadClient(id: number): void {
     this.clientService.getById(id).subscribe((client: Client) => {
@@ -111,12 +105,12 @@ export class ClientFormComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] ?? null;
 
-    // validação básica client-side
     if (file) {
       const allowed = ['application/pdf', 'image/jpeg'];
       if (!allowed.includes(file.type)) {
-        this.errorMessage = 'Documento inválido. Envie apenas PDF ou JPG.';
-        this.successMessage = '';
+        this.warningMessages = ['Documento inválido. Envie apenas PDF ou JPG.'];
+        this.errorMessages = [];
+        this.successMessage = undefined;
         input.value = '';
         this.documentControl.setValue(null);
         return;
@@ -128,15 +122,14 @@ export class ClientFormComponent implements OnInit {
 
   salvar(): void {
     this.submitted = true;
-    this.successMessage = '';
-    this.errorMessage = '';
+    this.successMessage = undefined;
+    this.warningMessages = [];
+    this.errorMessages = [];
 
-    // no update, password pode ficar vazio, então não travar por ele
     if (this.form.invalid) return;
 
     this.loading = true;
 
-    // ✅ sempre FormData (porque pode ter arquivo)
     const formData = new FormData();
 
     formData.append('login', this.form.controls.login.value);
@@ -145,20 +138,16 @@ export class ClientFormComponent implements OnInit {
     formData.append('email', this.form.controls.email.value);
     formData.append('address', this.form.controls.address.value);
 
-    // senha só no create
     if (!this.clientId) {
       formData.append('password', this.form.controls.password.value);
     }
 
-    // empresas
     this.form.controls.company_ids.value.forEach(id =>
       formData.append('company_ids[]', String(id))
     );
 
-    // documento (opcional)
     const file = this.documentControl.value;
     if (file) {
-      // use o nome do campo que seu Laravel espera (ex: document, file, documento...)
       formData.append('document', file, file.name);
     }
 
@@ -172,9 +161,7 @@ export class ClientFormComponent implements OnInit {
         this.successMessage = this.clientId
           ? 'Cliente atualizado com sucesso!'
           : 'Cliente cadastrado com sucesso!';
-        this.errorMessage = '';
 
-        // se quiser limpar tudo quando for CREATE:
         if (!this.clientId) {
           this.form.reset({
             login: '',
@@ -192,16 +179,35 @@ export class ClientFormComponent implements OnInit {
       error: (err: any) => {
         this.loading = false;
 
-        // tenta pegar mensagem do Laravel (422)
-        const msg =
-          err?.error?.message ||
-          (typeof err?.error === 'string' ? err.error : null) ||
-          'Erro ao salvar. Verifique os campos e tente novamente.';
-
-        this.errorMessage = msg;
-        this.successMessage = '';
+        const result = this.extractMessages(err);
+        this.warningMessages = result.warnings;
+        this.errorMessages = result.errors;
       }
     });
+  }
+
+  private extractMessages(err: any): {
+    warnings: string[];
+    errors: string[];
+  } {
+    if (err?.status === 422 && err?.error?.errors) {
+      return {
+        warnings: Object.values(err.error.errors).flat() as string[],
+        errors: []
+      };
+    }
+
+    if (err?.error?.message) {
+      return {
+        warnings: [],
+        errors: [err.error.message]
+      };
+    }
+
+    return {
+      warnings: [],
+      errors: ['Erro ao salvar cliente. Verifique os dados e tente novamente.']
+    };
   }
 
   voltar(): void {

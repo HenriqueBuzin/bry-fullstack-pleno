@@ -25,7 +25,7 @@ export interface Employee {
 }
 
 /**
- * ✅ PAYLOAD (PRECISA ESTAR EXPORTADO)
+ * PAYLOAD
  */
 export interface EmployeePayload {
   login: string;

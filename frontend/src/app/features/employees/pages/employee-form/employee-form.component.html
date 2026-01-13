@@ -1,124 +1,159 @@
 <div class="container mt-4">
 
+  <div *ngIf="successMessage"
+       class="alert alert-success alert-dismissible fade show">
+    {{ successMessage }}
+    <button class="btn-close" (click)="successMessage = undefined"></button>
+  </div>
+
+  <div *ngIf="warningMessages.length"
+       class="alert alert-warning alert-dismissible fade show">
+    <ul class="mb-0">
+      <li *ngFor="let msg of warningMessages">{{ msg }}</li>
+    </ul>
+    <button class="btn-close" (click)="warningMessages = []"></button>
+  </div>
+
+  <div *ngIf="errorMessages.length"
+       class="alert alert-danger alert-dismissible fade show">
+    <ul class="mb-0">
+      <li *ngFor="let msg of errorMessages">{{ msg }}</li>
+    </ul>
+    <button class="btn-close" (click)="errorMessages = []"></button>
+  </div>
+
   <div class="d-flex align-items-center mb-3">
     <button class="btn btn-secondary me-3" (click)="voltar()">← Voltar</button>
-    <h2 class="mb-0">
-      {{ employeeId ? 'Editar Funcionário' : 'Novo Funcionário' }}
-    </h2>
+    <h2>{{ employeeId ? 'Editar Funcionário' : 'Novo Funcionário' }}</h2>
   </div>
 
   <form [formGroup]="form" (ngSubmit)="salvar()" novalidate>
 
-    <!-- Login -->
     <div class="mb-3">
       <label class="form-label">Login *</label>
-      <input
-        class="form-control"
-        formControlName="login"
-        [class.is-invalid]="campoInvalido('login')"
-        [class.is-valid]="campoValido('login')"
-      >
-      <div class="invalid-feedback">
-        <div *ngIf="form.controls.login.errors?.['required']">
-          Login é obrigatório
+      <input class="form-control"
+             formControlName="login"
+             [class.is-invalid]="campoInvalido('login')">
+
+      <div class="invalid-feedback" *ngIf="campoInvalido('login')">
+        <div *ngIf="form.get('login')?.errors?.['required']">
+          O login é obrigatório.
         </div>
-        <div *ngIf="form.controls.login.errors?.['accent']">
-          Não use acentos
+        <div *ngIf="form.get('login')?.errors?.['noAccent']">
+          O login não pode conter acentuação.
         </div>
       </div>
     </div>
 
-    <!-- Nome -->
     <div class="mb-3">
       <label class="form-label">Nome *</label>
-      <input
-        class="form-control"
-        formControlName="name"
-        [class.is-invalid]="campoInvalido('name')"
-        [class.is-valid]="campoValido('name')"
-      >
-      <div class="invalid-feedback">
-        <div *ngIf="form.controls.name.errors?.['required']">
-          Nome é obrigatório
+      <input class="form-control"
+             formControlName="name"
+             [class.is-invalid]="campoInvalido('name')">
+
+      <div class="invalid-feedback" *ngIf="campoInvalido('name')">
+        <div *ngIf="form.get('name')?.errors?.['required']">
+          O nome é obrigatório.
         </div>
-        <div *ngIf="form.controls.name.errors?.['accent']">
-          Não use acentos
+        <div *ngIf="form.get('name')?.errors?.['noAccent']">
+          O nome não pode conter acentuação.
         </div>
       </div>
     </div>
 
-    <!-- CPF -->
     <div class="mb-3">
       <label class="form-label">CPF *</label>
-      <input
-        class="form-control"
-        formControlName="cpf"
-        maxlength="14"
-        placeholder="000.000.000-00"
-        (input)="onCpfInput($event)"
-        [class.is-invalid]="campoInvalido('cpf')"
-        [class.is-valid]="campoValido('cpf')"
-      >
-      <div class="invalid-feedback">
-        CPF é obrigatório
+      <input class="form-control"
+             formControlName="cpf"
+             maxlength="14"
+             placeholder="000.000.000-00"
+             (input)="onCpfInput($event)"
+             [class.is-invalid]="campoInvalido('cpf')">
+
+      <div class="invalid-feedback" *ngIf="campoInvalido('cpf')">
+        <div *ngIf="form.get('cpf')?.errors?.['required']">
+          O CPF é obrigatório.
+        </div>
+        <div *ngIf="form.get('cpf')?.errors?.['cpf']">
+          CPF inválido.
+        </div>
       </div>
     </div>
 
-    <!-- Email -->
     <div class="mb-3">
       <label class="form-label">E-mail *</label>
-      <input
-        class="form-control"
-        formControlName="email"
-        [class.is-invalid]="campoInvalido('email')"
-        [class.is-valid]="campoValido('email')"
-      >
-      <div class="invalid-feedback">
-        E-mail inválido
+      <input class="form-control"
+             formControlName="email"
+             [class.is-invalid]="campoInvalido('email')">
+
+      <div class="invalid-feedback" *ngIf="campoInvalido('email')">
+        <div *ngIf="form.get('email')?.errors?.['required']">
+          O e-mail é obrigatório.
+        </div>
+        <div *ngIf="form.get('email')?.errors?.['email']">
+          E-mail inválido.
+        </div>
       </div>
     </div>
 
-    <!-- Endereço -->
     <div class="mb-3">
       <label class="form-label">Endereço *</label>
-      <input
-        class="form-control"
-        formControlName="address"
-        [class.is-invalid]="campoInvalido('address')"
-        [class.is-valid]="campoValido('address')"
-      >
-      <div class="invalid-feedback">
-        Endereço é obrigatório
+      <input class="form-control"
+             formControlName="address"
+             [class.is-invalid]="campoInvalido('address')">
+
+      <div class="invalid-feedback" *ngIf="campoInvalido('address')">
+        <div *ngIf="form.get('address')?.errors?.['required']">
+          O endereço é obrigatório.
+        </div>
       </div>
     </div>
 
-    <!-- Senha -->
-    <div class="mb-3">
+    <div class="mb-3" *ngIf="!employeeId">
       <label class="form-label">Senha *</label>
-      <input
-        type="password"
-        class="form-control"
-        formControlName="password"
-        [class.is-invalid]="campoInvalido('password')"
-        [class.is-valid]="campoValido('password')"
-      >
-      <div class="invalid-feedback">
-        Senha é obrigatória
+      <input type="password"
+             class="form-control"
+             formControlName="password"
+             [class.is-invalid]="campoInvalido('password')">
+
+      <div class="invalid-feedback" *ngIf="campoInvalido('password')">
+        <div *ngIf="form.get('password')?.errors?.['required']">
+          A senha é obrigatória.
+        </div>
+        <div *ngIf="form.get('password')?.errors?.['minlength']">
+          A senha deve ter no mínimo 6 caracteres.
+        </div>
       </div>
     </div>
 
-    <!-- Documento -->
+    <div class="mb-3">
+      <label class="form-label">Empresas</label>
+
+      <div *ngFor="let c of companies"
+           class="form-check">
+        <input class="form-check-input"
+               type="checkbox"
+               [id]="'company_' + c.id"
+               [checked]="companyIds.includes(c.id)"
+               (change)="onCompanyToggle(c.id)">
+        <label class="form-check-label"
+               [for]="'company_' + c.id">
+          {{ c.name }}
+        </label>
+      </div>
+    </div>
+
     <div class="mb-3">
       <label class="form-label">Documento (PDF ou JPG)</label>
-      <input
-        type="file"
-        class="form-control"
-        (change)="onFileChange($event)"
-        accept=".pdf,.jpg,.jpeg"
-      >
+      <input type="file"
+             class="form-control"
+             accept=".pdf,.jpg,.jpeg"
+             (change)="onFileChange($event)">
     </div>
 
-    <button class="btn btn-primary" type="submit" [disabled]="loading">
+    <button class="btn btn-primary"
+            type="submit"
+            [disabled]="loading">
       {{ loading ? 'Salvando...' : 'Salvar' }}
     </button>
 
